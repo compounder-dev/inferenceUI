@@ -2,325 +2,609 @@
 
 import * as React from "react";
 import {
-  Activity, Boxes, Cpu, Globe, HardDrive, KeyRound, LayoutDashboard,
-  Package, Receipt, Server, Settings, Sparkles, Flame, TrendingUp,
-  Zap, Plus, ChevronRight, GraduationCap, Briefcase, Code,
+  Star, ArrowDownToLine, ArrowUpFromLine,
+  Cpu, Package, HardDrive, Code, Globe,
+  Activity, Zap, ChevronDown, Briefcase, ShieldCheck, FlaskConical,
 } from "lucide-react";
-import { CoordStrip } from "@/components/iui/coord-strip";
-import { CategoryNav } from "@/components/iui/category-nav";
-import { CarouselDots } from "@/components/iui/carousel-dots";
-import { FeaturedMarket } from "@/components/iui/featured-market";
-import { AdonaiDownloadCard } from "@/components/iui/adonai-download-card";
-import { DiscoveryRow } from "@/components/iui/discovery-row";
-import { ProfileChip } from "@/components/iui/profile-chip";
-import { RankedRail } from "@/components/iui/ranked-rail";
-import { SidebarNav } from "@/components/iui/sidebar-nav";
-import { TagPills } from "@/components/iui/tag-pills";
-import { ThemeSwitch } from "@/components/iui/theme-switch";
-import { TickerTape } from "@/components/iui/ticker-tape";
-import { Toolbar } from "@/components/iui/toolbar";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { TileCard } from "@/components/iui/tile-card";
+import { Numeric } from "@/components/iui/numeric";
+import { Delta } from "@/components/iui/delta";
+import { Sparkline } from "@/components/iui/sparkline";
+import { TopNav } from "@/components/iui/top-nav";
+import { cn } from "@/lib/utils";
 
-const TICKER_ITEMS = [
-  { symbol: "H100·JNB",    price: 3.42,  change:  0.021, unit: "/ hr",     live: true },
-  { symbol: "A100·JNB",    price: 2.45,  change:  0.012, unit: "/ hr",     live: true },
-  { symbol: "L40S·FRA",    price: 1.84,  change: -0.014, unit: "/ hr" },
-  { symbol: "M2-Pro·STB",  price: 0.45,  change: -0.031, unit: "/ hr" },
-  { symbol: "Orin·CPT",    price: 0.18,  change: -0.067, unit: "/ hr" },
-  { symbol: "Opus·1M",     price: 15.0,  change:  0.012, unit: "/ 1M tok", live: true },
-  { symbol: "GPT5·200K",   price: 10.0,  change: -0.008, unit: "/ 1M tok" },
-  { symbol: "Llama4·128K", price: 0.42,  change: -0.028, unit: "/ 1M tok", live: true },
-  { symbol: "Qwen-VL",     price: 0.09,  change:  0.04,  unit: "/ 1M tok", live: true },
-  { symbol: "Sonnet·200K", price: 3.0,   change:  0.003, unit: "/ 1M tok", live: true },
-];
-
-const CATEGORIES = [
-  { id: "trending", label: "Trending", icon: <TrendingUp className="size-3.5" strokeWidth={2} /> },
-  { id: "new",      label: "New",      icon: <Sparkles className="size-3.5" strokeWidth={2} /> },
-  { id: "hardware", label: "Hardware", icon: <Cpu className="size-3.5" strokeWidth={2} /> },
-  { id: "models",   label: "Models",   icon: <Package className="size-3.5" strokeWidth={2} /> },
-  { id: "agents",   label: "Agents",   icon: <Sparkles className="size-3.5" strokeWidth={2} /> },
-  { id: "edge",     label: "Edge",     icon: <HardDrive className="size-3.5" strokeWidth={2} /> },
-  { id: "open",     label: "Open weight", icon: <Code className="size-3.5" strokeWidth={2} /> },
-  { id: "research", label: "Research", icon: <GraduationCap className="size-3.5" strokeWidth={2} /> },
-  { id: "business", label: "Business", icon: <Briefcase className="size-3.5" strokeWidth={2} /> },
-  { id: "global",   label: "Global",   icon: <Globe className="size-3.5" strokeWidth={2} /> },
-];
-
-const TAG_FILTERS = [
-  { id: "all",        label: "All",         count: 243 },
-  { id: "h100",       label: "H100" },
-  { id: "llama-4",    label: "Llama 4" },
-  { id: "claude",     label: "Claude" },
-  { id: "edge",       label: "Edge" },
-  { id: "open",       label: "Open weight" },
-  { id: "fp8",        label: "FP8" },
-  { id: "agents",     label: "Agents" },
-  { id: "sandbox",    label: "Sandboxes" },
-  { id: "stb",        label: "ZA-STB" },
-];
+// ──────────────────────────────────────────────────────────────────────────
+// Mock data — exchange seeds. In a real app these come from the API spine.
+// ──────────────────────────────────────────────────────────────────────────
 
 const FEATURED_SERIES = [
-  0.42, 0.40, 0.41, 0.40, 0.42, 0.40, 0.41, 0.40, 0.42, 0.42,
-  0.41, 0.42, 0.43, 0.55, 0.85, 1.20, 0.95, 0.78, 0.72, 0.68,
-  0.62, 0.58, 0.54, 0.50, 0.48, 0.46, 0.44, 0.43, 0.42, 0.42,
-  0.42, 0.41, 0.41, 0.41,
+  3.18, 3.21, 3.19, 3.22, 3.27, 3.30, 3.34, 3.31, 3.28, 3.30,
+  3.36, 3.41, 3.39, 3.34, 3.38, 3.43, 3.40, 3.37, 3.39, 3.42,
 ];
 
-const FEATURED_EVENTS = [
-  { at: 4,  label: "+ 0.02", tone: "up"   as const },
-  { at: 12, label: "+ 0.05", tone: "up"   as const },
-  { at: 14, label: "spike",  tone: "up"   as const },
-  { at: 22, label: "− 0.10", tone: "down" as const },
+const TRENDING_TABS = [
+  { id: "trending", label: "Trending" },
+  { id: "new",      label: "New" },
+  { id: "hardware", label: "Hardware" },
+  { id: "models",   label: "Models" },
+  { id: "agents",   label: "Agents" },
+  { id: "edge",     label: "Edge" },
+  { id: "open",     label: "Open weight" },
 ];
 
-const FEATURED_NEWS = [
-  { source: "Vultr",     logo: "V", title: "H100 80GB SXM capacity expanded in ZA-JNB · 8 new instances live", timeAgo: "2m ago" },
-  { source: "Anthropic", logo: "A", title: "Claude Sonnet 4.6 added to global routing pool", timeAgo: "1h ago" },
-  { source: "EdgeLab",   logo: "E", title: "Mac mini M2 Pro cluster relisted at -8% in ZA-STB", timeAgo: "3h ago" },
+const TRENDING_MARKETS = [
+  {
+    id: "h100", icon: <Cpu className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "H100 80GB SXM", kind: "GPU · Hopper", venue: "Vultr · ZA-JNB",
+    price: 3.42, unit: "/ hr", change: 0.021, vol: "$11.2M", series: [3.14, 3.18, 3.22, 3.27, 3.30, 3.34, 3.36, 3.42],
+  },
+  {
+    id: "opus-4-7", icon: <Package className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "Claude Opus 4.7", kind: "Model · 1M ctx", venue: "Anthropic · global",
+    price: 15.00, unit: "/ 1M tok", change: 0.012, vol: "$141K", series: [14.7, 14.8, 14.9, 15.0, 15.1, 15.0, 15.0],
+  },
+  {
+    id: "llama-4", icon: <Package className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "Llama 4 Instruct", kind: "Model · 128K · open", venue: "Meta · global",
+    price: 0.42, unit: "/ 1M tok", change: -0.028, vol: "$270K", series: [0.45, 0.44, 0.43, 0.42, 0.42, 0.42],
+  },
+  {
+    id: "a100", icon: <Cpu className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "A100 80GB PCIe", kind: "GPU · Ampere", venue: "Vultr · ZA-JNB",
+    price: 2.45, unit: "/ hr", change: 0.012, vol: "$5.4M", series: [2.40, 2.41, 2.43, 2.44, 2.45, 2.45, 2.45],
+  },
+  {
+    id: "m2-stb", icon: <HardDrive className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "Mac mini M2 Pro", kind: "Edge · Apple Silicon", venue: "EdgeLab · ZA-STB",
+    price: 0.45, unit: "/ hr", change: -0.031, vol: "$420K", series: [0.50, 0.49, 0.48, 0.47, 0.46, 0.45, 0.45],
+  },
+  {
+    id: "orin", icon: <HardDrive className="size-5 text-accent" strokeWidth={1.75} />,
+    title: "Jetson Orin Nano", kind: "Edge · ARM", venue: "CapeCompute · ZA-CPT",
+    price: 0.18, unit: "/ hr", change: -0.067, vol: "$210K", series: [0.22, 0.21, 0.20, 0.19, 0.18, 0.18, 0.18],
+  },
 ];
 
-const HOT_MODELS = [
-  { id: "opus-4-7",      label: "Claude Opus 4.7",  meta: "Anthropic · 1M ctx",     value: "$141K", change: 0.084, hot: true,  thumbnail: <span className="font-mono text-2xs">OP</span> },
-  { id: "gpt-5",         label: "GPT-5",            meta: "OpenAI · 200K ctx",      value: "$272M", change: 0.024, hot: true,  thumbnail: <span className="font-mono text-2xs">G5</span> },
-  { id: "llama-4",       label: "Llama 4 Instruct", meta: "Meta · 128K · open",     value: "$270K", change: -0.012,             thumbnail: <span className="font-mono text-2xs">L4</span> },
-  { id: "sonnet-4-6",    label: "Claude Sonnet 4.6", meta: "Anthropic · 200K",      value: "$114K", change: 0.012,              thumbnail: <span className="font-mono text-2xs">S4</span> },
-  { id: "qwen-vl",       label: "Qwen VL 7B",       meta: "Alibaba · 32K · open",   value: "$117K", change: 0.040, hot: true,   thumbnail: <span className="font-mono text-2xs">QW</span> },
+const POSITIONS = [
+  { id: "h100", label: "H100 80GB SXM", side: "Active", qty: "2 instances", value: "$2,341.20", change: 0.084 },
+  { id: "opus", label: "Claude Opus 4.7", side: "Streaming", qty: "120K req · 24h", value: "$1,125.00", change: 0.024 },
+  { id: "hermes", label: "Hermes Agent", side: "Idle", qty: "1 runtime", value: "$48.50", change: -0.012 },
 ];
 
-const TRENDING_COMPUTE = [
-  { id: "h100-jnb",      label: "H100 80GB SXM",     meta: "Vultr · ZA-JNB",        value: "$3.42",  change: 0.021, hot: true,  thumbnail: <Cpu className="size-3.5" strokeWidth={2} /> },
-  { id: "a100-jnb",      label: "A100 80GB PCIe",    meta: "Vultr · ZA-JNB",        value: "$2.45",  change: 0.012,              thumbnail: <Cpu className="size-3.5" strokeWidth={2} /> },
-  { id: "l40s-fra",      label: "L40S 48GB",         meta: "EdgeLab · EU-FRA",      value: "$1.84",  change: -0.014,             thumbnail: <Cpu className="size-3.5" strokeWidth={2} /> },
-  { id: "m2-stb",        label: "Mac mini M2 Pro",   meta: "EdgeLab · ZA-STB",      value: "$0.45",  change: -0.031,             thumbnail: <HardDrive className="size-3.5" strokeWidth={2} /> },
-  { id: "orin-cpt",      label: "Jetson Orin Nano",  meta: "CapeCompute · ZA-CPT",  value: "$0.18",  change: -0.067, hot: true,  thumbnail: <HardDrive className="size-3.5" strokeWidth={2} /> },
+const TOP_MOVERS = [
+  { label: "Llama 4 Instruct", price: "$0.42", change: 0.180, sub: "/ 1M tok" },
+  { label: "Hermes Agent", price: "$0.50", change: 0.120, sub: "/ hr" },
+  { label: "H100 · ZA-JNB", price: "$3.42", change: 0.090, sub: "/ hr" },
+  { label: "A100 · ZA-JNB", price: "$2.45", change: -0.014, sub: "/ hr" },
+  { label: "Jetson Orin", price: "$0.18", change: -0.067, sub: "/ hr" },
 ];
 
-const HARDWARE_ROWS = [
-  { id: "h100-jnb",  name: "H100 80GB SXM",   kind: "GPU · Hopper",         hostedBy: "Vultr · ZA-JNB",        status: "available" as const, price: 3.42, change:  0.021, metrics: [{ label: "P50", value: "18 ms", tone: "up" as const }, { label: "Uptime", value: "99.91%", tone: "up" as const }], series: [3.14, 3.18, 3.21, 3.27, 3.30, 3.34, 3.36, 3.42] },
-  { id: "a100-jnb",  name: "A100 80GB PCIe",  kind: "GPU · Ampere",         hostedBy: "Vultr · ZA-JNB",        status: "available" as const, price: 2.45, change:  0.016, metrics: [{ label: "P50", value: "15 ms", tone: "up" as const }, { label: "Uptime", value: "99.89%", tone: "up" as const }], series: [2.40, 2.41, 2.43, 2.44, 2.45, 2.46, 2.45] },
-  { id: "l40s-fra",  name: "L40S 48GB",       kind: "GPU · Ada Lovelace",   hostedBy: "EdgeLab · EU-FRA",      status: "live" as const,      price: 1.84, change: -0.014, metrics: [{ label: "P50", value: "24 ms", tone: "up" as const }, { label: "Uptime", value: "99.62%", tone: "warn" as const }], series: [1.92, 1.90, 1.88, 1.86, 1.84, 1.82, 1.84] },
-  { id: "m2-stb",    name: "Mac mini M2 Pro", kind: "Edge · Apple Silicon", hostedBy: "EdgeLab · ZA-STB",      status: "low" as const,       price: 0.45, change: -0.031, metrics: [{ label: "P50", value: "28 ms", tone: "up" as const }, { label: "Uptime", value: "99.60%", tone: "warn" as const }], series: [0.50, 0.49, 0.48, 0.47, 0.46, 0.45, 0.45] },
-  { id: "rpi-5",     name: "Raspberry Pi 5",  kind: "Edge · ARM",           hostedBy: "Self-host kit",         status: "available" as const, price: 0.04, change:  0.0,   metrics: [{ label: "Cores", value: "4 × A76" }, { label: "RAM", value: "8 GB" }], series: [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04] },
+const BUNDLES = [
+  { id: "gpu",   title: "GPU compute", count: 6, vol: "$28.4M", icon: <Cpu className="size-4" strokeWidth={1.75} /> },
+  { id: "open",  title: "Open-weight models", count: 12, vol: "$4.1M", icon: <Code className="size-4" strokeWidth={1.75} /> },
+  { id: "edge",  title: "Edge hardware", count: 8, vol: "$1.2M", icon: <HardDrive className="size-4" strokeWidth={1.75} /> },
 ];
 
-const MODEL_ROWS = [
-  { id: "opus-4-7",   name: "Claude Opus 4.7",  kind: "Model · 1M ctx",   hostedBy: "Anthropic",  status: "live" as const, price: 15.0, change:  0.012, metrics: [{ label: "Throughput", value: "2,843 tok/s" }, { label: "MMLU", value: "98.4", tone: "up" as const }], series: [14.7, 14.8, 14.9, 15.0, 15.1, 15.0, 15.0] },
-  { id: "gpt-5",      name: "GPT-5",            kind: "Model · 200K ctx", hostedBy: "OpenAI",     status: "live" as const, price: 10.0, change: -0.008, metrics: [{ label: "Throughput", value: "3,120 tok/s" }, { label: "MMLU", value: "97.6", tone: "up" as const }], series: [10.1, 10.05, 10.0, 9.95, 10.0, 10.0] },
-  { id: "llama-4",    name: "Llama 4 Instruct", kind: "Model · 128K · open", hostedBy: "Meta", status: "live" as const, price: 0.42, change: -0.028, metrics: [{ label: "Throughput", value: "4,210 tok/s", tone: "up" as const }, { label: "MMLU", value: "92.1" }], series: [0.45, 0.44, 0.43, 0.42, 0.42, 0.42] },
+const WATCHLIST = [
+  { label: "Claude Opus 4.7", price: "$15.00", change: 0.012 },
+  { label: "H100 80GB SXM",   price: "$3.42",  change: 0.021 },
+  { label: "Llama 4 Instruct", price: "$0.42", change: -0.028 },
+  { label: "Hermes Agent",    price: "$0.50",  change: 0.120 },
+  { label: "A100 80GB PCIe",  price: "$2.45",  change: 0.012 },
 ];
 
-const AGENT_ROWS = [
-  { id: "openclaw", name: "openclaw",        kind: "Agent · routing",    hostedBy: "Inference Exchange",  status: "live" as const,      price: 0.0, change: undefined, metrics: [{ label: "Calls · 24h", value: "12.4k" }, { label: "Latency", value: "240 ms", tone: "up" as const }] },
-  { id: "hermes",   name: "Hermes Agent",    kind: "Agent · cloud sandbox", hostedBy: "NousResearch · pilot", status: "available" as const, price: 0.50, change: undefined, metrics: [{ label: "Tools", value: "12" }, { label: "Sandbox", value: "Cloud · 4GB" }] },
+const CATALYSTS = [
+  { date: "MAY 12", title: "Vultr ZA-JNB capacity expansion", tag: "Major" },
+  { date: "MAY 14", title: "Llama 4 long-context release",   tag: "Major" },
+  { date: "MAY 16", title: "Hermes Agent v2 rollout",        tag: "Medium" },
+  { date: "MAY 22", title: "Frankfurt region maintenance",   tag: "Minor" },
 ];
 
-const ICON_FOR = (kind?: string) => {
-  if (!kind) return null;
-  if (kind.startsWith("GPU"))   return <Cpu className="size-4 text-fg-muted" strokeWidth={1.75} />;
-  if (kind.startsWith("Edge"))  return <HardDrive className="size-4 text-fg-muted" strokeWidth={1.75} />;
-  if (kind.startsWith("Model")) return <Package className="size-4 text-fg-muted" strokeWidth={1.75} />;
-  if (kind.startsWith("Agent")) return <Sparkles className="size-4 text-fg-muted" strokeWidth={1.75} />;
-  return null;
-};
+// ──────────────────────────────────────────────────────────────────────────
 
-export default function Home() {
-  const [category, setCategory] = React.useState("trending");
-  const [tag, setTag] = React.useState("all");
-  const [slide, setSlide] = React.useState(0);
+export default function DiscoverPage() {
+  const [tab, setTab] = React.useState("discover");
+  const [trendingTab, setTrendingTab] = React.useState("trending");
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background text-fg">
-      <CoordStrip system="INFERENCE.EX" region="GLOBAL" state="All systems operational" tone="up" fixedTime="14:32:18 UTC" />
+    <div className="flex min-h-dvh flex-col bg-background">
+      <TopNav active={tab} onChange={setTab} account={{ initials: "NL", label: "0x7f…3a2e" }} />
 
-      <div className="flex flex-1">
-        <SidebarNav.Root width={232} className="hidden lg:flex">
-          <SidebarNav.Header>
-            <ProfileChip name="Nightcat Labs" meta="Workspace" size="sm" />
-          </SidebarNav.Header>
-          <SidebarNav.Section label="Trade">
-            <SidebarNav.Item icon={<LayoutDashboard className="size-4" strokeWidth={1.75} />} label="Overview" />
-            <SidebarNav.Item icon={<Activity className="size-4" strokeWidth={1.75} />} label="Markets" active />
-            <SidebarNav.Item icon={<Boxes className="size-4" strokeWidth={1.75} />} label="Deployments" />
-            <SidebarNav.Item icon={<Cpu className="size-4" strokeWidth={1.75} />} label="Runtimes" />
-            <SidebarNav.Item icon={<Package className="size-4" strokeWidth={1.75} />} label="Models" />
-            <SidebarNav.Item icon={<HardDrive className="size-4" strokeWidth={1.75} />} label="Hardware" />
-            <SidebarNav.Item icon={<Sparkles className="size-4" strokeWidth={1.75} />} label="Agents" />
-          </SidebarNav.Section>
-          <SidebarNav.Section label="Account">
-            <SidebarNav.Item icon={<Receipt className="size-4" strokeWidth={1.75} />} label="Usage & billing" />
-            <SidebarNav.Item icon={<KeyRound className="size-4" strokeWidth={1.75} />} label="API keys" />
-            <SidebarNav.Item icon={<Server className="size-4" strokeWidth={1.75} />} label="Logs & events" />
-            <SidebarNav.Item icon={<Settings className="size-4" strokeWidth={1.75} />} label="Settings" />
-          </SidebarNav.Section>
-          <SidebarNav.Footer>
-            <ProfileChip name="Marc Knowles" meta="marc@compounder.dev" size="sm" />
-          </SidebarNav.Footer>
-        </SidebarNav.Root>
+      <main className="flex-1">
+        <div className="mx-auto w-full max-w-[1440px] px-6 py-8 lg:px-10 lg:py-10">
+          {/* Hero row — three columns: pitch / featured market / balance */}
+          <section className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(280px,360px)_minmax(0,1fr)_minmax(280px,320px)]">
+            <HeroPitch />
+            <FeaturedMarket />
+            <BalanceRail />
+          </section>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <Toolbar
-            breadcrumb={<span className="text-sm text-fg-subtle">Markets</span>}
-            actions={<ThemeSwitch className="ml-1" />}
-          />
-
-          <CategoryNav items={CATEGORIES} value={category} onChange={setCategory} />
-          <TickerTape items={TICKER_ITEMS} speed={32} />
-
-          <main className="flex-1 overflow-y-auto px-5 py-6 lg:px-10 lg:py-8">
-            <div className="mx-auto w-full max-w-[1400px]">
-              {/* Featured market + ranked rails */}
-              <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
-                <div className="flex flex-col gap-3">
-                  <FeaturedMarket
-                    thumbnail={<Cpu className="size-6 text-accent" strokeWidth={1.75} />}
-                    title="Llama 4 Instruct · 128K is the most-routed open model this week"
-                    primaryValue="$0.42"
-                    primaryLabel="spot · / 1M tok"
-                    change={-0.028}
-                    data={FEATURED_SERIES}
-                    events={FEATURED_EVENTS}
-                    primaryAction={{ label: "Launch runtime", tone: "accent", onClick: () => {} }}
-                    secondaryAction={{ label: "Add to watchlist", tone: "neutral", onClick: () => {} }}
-                    onShare={() => {}}
-                    onSave={() => {}}
-                    footer={
-                      <div className="flex w-full items-center justify-between font-mono tabular text-2xs">
-                        <span>$11.2M · 24h vol</span>
-                        <span>62 providers · global</span>
-                      </div>
-                    }
-                    context={FEATURED_NEWS}
-                  />
-                  <div className="flex items-center justify-between">
-                    <CarouselDots count={5} active={slide} onSelect={setSlide} />
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        className="inline-flex h-7 items-center gap-1 rounded-md border border-line bg-card/40 px-2.5 text-xs text-fg-muted hover:text-fg"
-                      >
-                        H100 80GB SXM
-                        <ChevronRight className="size-3" strokeWidth={2} />
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex h-7 items-center gap-1 rounded-md border border-line bg-card/40 px-2.5 text-xs text-fg-muted hover:text-fg"
-                      >
-                        Hermes Agent
-                        <ChevronRight className="size-3" strokeWidth={2} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <aside className="flex flex-col gap-3">
-                  <RankedRail
-                    title={<span className="flex items-center gap-2"><Flame className="size-4 text-accent" strokeWidth={2} fill="currentColor" /> Hot models</span>}
-                    items={HOT_MODELS}
-                    onSelect={() => {}}
-                    viewAllHref="/markets"
-                  />
-                  <RankedRail
-                    title={<span className="flex items-center gap-2"><TrendingUp className="size-4 text-data-up" strokeWidth={2} /> Trending compute</span>}
-                    items={TRENDING_COMPUTE}
-                    onSelect={() => {}}
-                    viewAllHref="/markets"
-                  />
-                </aside>
-              </div>
-
-              {/* Adonai download container */}
-              <div className="mt-10">
-                <AdonaiDownloadCard />
-              </div>
-
-              {/* All markets */}
-              <section className="mt-12">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    <h2 className="display text-3xl text-fg">All markets</h2>
-                    <p className="mt-2 max-w-xl text-sm text-fg-muted">
-                      Hardware to buy and rent, models priced live, and agents you can host in a runtime — all in one network.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-5">
-                  <TagPills items={TAG_FILTERS} value={tag} onChange={setTag} />
-                </div>
-
-                <h3 className="mt-8 text-md font-medium text-fg">Hardware</h3>
-                <div className="mt-3 flex flex-col gap-px border border-line-subtle bg-line-subtle">
-                  {HARDWARE_ROWS.map((r) => (
-                    <DiscoveryRow
-                      key={r.id}
-                      name={r.name}
-                      kind={r.kind}
-                      hostedBy={r.hostedBy}
-                      icon={ICON_FOR(r.kind)}
-                      status={r.status}
-                      price={r.price}
-                      unit="/ hr"
-                      change={r.change}
-                      metrics={r.metrics}
-                      series={r.series}
-                      onSelect={() => {}}
-                      onLaunch={() => {}}
-                      onSave={() => {}}
-                    />
-                  ))}
-                </div>
-
-                <h3 className="mt-10 text-md font-medium text-fg">Models</h3>
-                <div className="mt-3 flex flex-col gap-px border border-line-subtle bg-line-subtle">
-                  {MODEL_ROWS.map((r) => (
-                    <DiscoveryRow
-                      key={r.id}
-                      name={r.name}
-                      kind={r.kind}
-                      hostedBy={r.hostedBy}
-                      icon={ICON_FOR(r.kind)}
-                      status={r.status}
-                      price={r.price}
-                      unit="/ 1M tok"
-                      change={r.change}
-                      metrics={r.metrics}
-                      series={r.series}
-                      onSelect={() => {}}
-                      onLaunch={() => {}}
-                      onSave={() => {}}
-                    />
-                  ))}
-                </div>
-
-                <h3 className="mt-10 text-md font-medium text-fg">Agents</h3>
-                <div className="mt-3 flex flex-col gap-px border border-line-subtle bg-line-subtle">
-                  {AGENT_ROWS.map((r) => (
-                    <DiscoveryRow
-                      key={r.id}
-                      name={r.name}
-                      kind={r.kind}
-                      hostedBy={r.hostedBy}
-                      icon={ICON_FOR(r.kind)}
-                      status={r.status}
-                      price={r.price}
-                      unit={r.price > 0 ? "/ hr" : "free"}
-                      change={r.change}
-                      metrics={r.metrics}
-                      onSelect={() => {}}
-                      onLaunch={() => {}}
-                      onSave={() => {}}
-                    />
-                  ))}
-                </div>
-
-                <p className="mt-6 text-center font-mono text-xs tabular text-fg-subtle">
-                  Showing 1 — {HARDWARE_ROWS.length + MODEL_ROWS.length + AGENT_ROWS.length} of 243
-                </p>
-              </section>
+          {/* Trending markets */}
+          <section className="mt-12">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <h2 className="text-xl font-semibold tracking-tight text-fg">Trending markets</h2>
+              <a className="text-sm text-accent hover:underline" href="#">View all →</a>
             </div>
-          </main>
+
+            <Tabs value={trendingTab} onValueChange={setTrendingTab} className="mt-4">
+              <TabsList className="bg-transparent p-0 gap-1 h-auto flex-wrap justify-start">
+                {TRENDING_TABS.map((t) => (
+                  <TabsTrigger
+                    key={t.id}
+                    value={t.id}
+                    className={cn(
+                      "h-8 rounded-md border border-line px-3 text-sm font-medium",
+                      "data-[state=active]:bg-accent-soft data-[state=active]:border-accent/40 data-[state=active]:text-accent",
+                      "data-[state=inactive]:bg-card data-[state=inactive]:text-fg-muted",
+                      "hover:text-fg",
+                    )}
+                  >
+                    {t.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {TRENDING_MARKETS.map((m) => (
+                <MarketCard key={m.id} {...m} />
+              ))}
+            </div>
+          </section>
+
+          {/* Bundles + Watchlist + Catalysts */}
+          <section className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <BundlesCard />
+            <WatchlistCard />
+            <CatalystsCard />
+          </section>
         </div>
+      </main>
+
+      <FooterBar />
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Hero pitch
+
+function HeroPitch() {
+  const features = [
+    { icon: <Activity className="size-3.5" strokeWidth={1.75} />, label: "Real-time pricing", sub: "Spot updates · 50ms" },
+    { icon: <ShieldCheck className="size-3.5" strokeWidth={1.75} />, label: "Deep liquidity",      sub: "Tight provider spreads" },
+    { icon: <Globe className="size-3.5" strokeWidth={1.75} />,    label: "Transparent",          sub: "Onchain · auditable" },
+    { icon: <Code className="size-3.5" strokeWidth={1.75} />,     label: "Powerful APIs",        sub: "REST · gRPC · SSE" },
+    { icon: <Briefcase className="size-3.5" strokeWidth={1.75} />, label: "Open weights",        sub: "Llama · Mistral · Qwen" },
+    { icon: <FlaskConical className="size-3.5" strokeWidth={1.75} />, label: "Sandboxes",        sub: "Cloud agent runtimes" },
+  ];
+  return (
+    <div className="flex flex-col gap-6">
+      <h1 className="text-[44px] font-semibold leading-[1.05] tracking-[-0.025em] text-fg lg:text-[52px]">
+        The world's compute,<br />priced in <span className="text-accent">real time.</span>
+      </h1>
+      <p className="max-w-md text-sm text-fg-muted">
+        Trade GPUs, models, and agents on one exchange. Live prices. Real liquidity. Hosted, edge, or on your own metal.
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        {features.map((f, i) => (
+          <div
+            key={i}
+            className="flex items-start gap-2 rounded-md border border-line bg-card px-3 py-2.5"
+          >
+            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent">
+              {f.icon}
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-fg">{f.label}</div>
+              <div className="truncate text-2xs text-fg-subtle">{f.sub}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Featured market
+
+function FeaturedMarket() {
+  return (
+    <TileCard flush className="flex flex-col">
+      <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
+        <div className="flex items-center gap-2 font-mono text-2xs uppercase tracking-[0.14em] text-accent">
+          <Zap className="size-3.5" strokeWidth={2} fill="currentColor" />
+          Featured market
+        </div>
+        <button className="grid size-7 place-items-center rounded-md text-fg-subtle hover:bg-secondary hover:text-fg" aria-label="Save">
+          <Star className="size-3.5" strokeWidth={1.75} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[1fr_280px]">
+        <div className="flex flex-col gap-4 bg-card px-5 py-4">
+          <div className="flex items-start gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
+              <Cpu className="size-5" strokeWidth={1.75} />
+            </span>
+            <div className="min-w-0">
+              <h3 className="text-lg font-semibold tracking-tight text-fg">
+                H100 80GB SXM is the most-routed GPU this week
+              </h3>
+              <div className="mt-1 flex items-center gap-2 text-xs text-fg-muted">
+                <span className="rounded-sm bg-accent-soft px-1.5 py-0.5 text-accent">GPU</span>
+                <span>Vultr · ZA-JNB</span>
+                <span className="text-fg-subtle/40">·</span>
+                <span>updated 12s ago</span>
+              </div>
+            </div>
+          </div>
+
+          <ChartBlock data={FEATURED_SERIES} />
+
+          <div className="flex flex-wrap gap-x-6 gap-y-1 border-t border-line-subtle pt-3 text-xs text-fg-muted">
+            <Stat label="Liquidity"   value="$11.2M" />
+            <Stat label="24h volume"  value="$1.84M" />
+            <Stat label="Providers"   value="62" />
+            <Stat label="Capacity"    value="2 / 8 free" />
+          </div>
+        </div>
+
+        <aside className="flex flex-col gap-3 bg-card px-5 py-4">
+          <div>
+            <div className="text-2xs font-medium uppercase tracking-[0.12em] text-fg-subtle">Spot price</div>
+            <div className="mt-1 flex items-baseline gap-2">
+              <Numeric weight="display" size="2rem">$3.42</Numeric>
+              <span className="text-xs text-fg-muted">/ hr</span>
+            </div>
+            <div className="mt-1 flex items-center gap-2">
+              <Delta value={0.021} size="sm" />
+              <span className="text-xs text-fg-subtle">24h</span>
+            </div>
+          </div>
+
+          <Button className="h-10 w-full gap-2 text-sm font-medium">
+            <Zap className="size-4" strokeWidth={2.4} fill="currentColor" />
+            Launch runtime
+          </Button>
+          <Button variant="outline" className="h-10 w-full text-sm font-medium">
+            Rent now
+          </Button>
+
+          <Separator className="my-1" />
+
+          <a className="flex items-center justify-between text-sm text-fg-muted hover:text-fg" href="#">
+            View market
+            <span aria-hidden>→</span>
+          </a>
+        </aside>
+      </div>
+    </TileCard>
+  );
+}
+
+function ChartBlock({ data }: { data: readonly number[] }) {
+  const wrapRef = React.useRef<HTMLDivElement>(null);
+  const [width, setWidth] = React.useState(620);
+  const height = 168;
+  const padX = 10;
+  const padY = 10;
+  const innerW = Math.max(0, width - padX * 2);
+  const innerH = Math.max(0, height - padY * 2);
+
+  React.useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      if (entry) setWidth(Math.floor(entry.contentRect.width));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const stepX = data.length > 1 ? innerW / (data.length - 1) : 0;
+  const points = data.map((v, i) => [padX + i * stepX, padY + innerH - ((v - min) / range) * innerH] as const);
+  const linePath = points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
+  const areaPath = `${linePath} L${points[points.length - 1]![0].toFixed(2)},${padY + innerH} L${points[0]![0].toFixed(2)},${padY + innerH} Z`;
+  const last = points[points.length - 1]!;
+
+  return (
+    <div ref={wrapRef} className="relative -mx-1">
+      <svg width={width} height={height} className="block">
+        <defs>
+          <linearGradient id="featured-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={areaPath} fill="url(#featured-fill)" />
+        <path d={linePath} fill="none" stroke="var(--accent)" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx={last[0]} cy={last[1]} r={4} fill="var(--accent)" stroke="var(--card)" strokeWidth={2} />
+      </svg>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col">
+      <span className="text-2xs uppercase tracking-[0.1em] text-fg-subtle">{label}</span>
+      <span className="text-sm font-medium text-fg tabular">{value}</span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Balance rail
+
+function BalanceRail() {
+  return (
+    <div className="flex flex-col gap-4">
+      <TileCard density="comfortable" className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-fg-muted">Your balance</span>
+          <button className="text-xs text-fg-subtle hover:text-fg">Hide</button>
+        </div>
+        <div>
+          <Numeric weight="display" size="2.25rem">$12,430.58</Numeric>
+          <div className="mt-1 flex items-center gap-2">
+            <Delta value={0.110} size="sm" />
+            <span className="text-xs text-fg-subtle">+$1,234.21 · 24h</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Button className="h-9 gap-1.5 text-sm font-medium">
+            <ArrowDownToLine className="size-3.5" strokeWidth={2} />
+            Deposit
+          </Button>
+          <Button variant="outline" className="h-9 gap-1.5 text-sm font-medium">
+            <ArrowUpFromLine className="size-3.5" strokeWidth={2} />
+            Withdraw
+          </Button>
+        </div>
+      </TileCard>
+
+      <TileCard flush className="flex flex-col">
+        <div className="flex items-center justify-between px-5 pt-4 pb-2">
+          <span className="text-sm font-medium text-fg">Active runtimes</span>
+          <a className="text-xs text-accent hover:underline" href="#">View all</a>
+        </div>
+        <ul className="flex flex-col">
+          {POSITIONS.map((p) => (
+            <li
+              key={p.id}
+              className="flex items-center justify-between gap-3 border-t border-line-subtle px-5 py-3 first:border-t-0"
+            >
+              <div className="min-w-0">
+                <div className="truncate text-sm font-medium text-fg">{p.label}</div>
+                <div className="text-2xs text-fg-subtle">
+                  <span className={cn(
+                    "inline-flex items-center gap-1",
+                    p.side === "Active" ? "text-data-up" : p.side === "Streaming" ? "text-accent" : "text-fg-subtle",
+                  )}>
+                    <span className={cn(
+                      "size-1.5 rounded-full",
+                      p.side === "Active" ? "bg-data-up dot-live" : p.side === "Streaming" ? "bg-accent" : "bg-fg-subtle",
+                    )} />
+                    {p.side}
+                  </span>
+                  <span className="text-fg-subtle/40"> · </span>
+                  {p.qty}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium text-fg tabular">{p.value}</div>
+                <Delta value={p.change} size="sm" className="justify-end" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </TileCard>
+
+      <TileCard flush className="flex flex-col">
+        <div className="flex items-center justify-between px-5 pt-4 pb-2">
+          <span className="text-sm font-medium text-fg">Top movers</span>
+          <span className="text-2xs text-fg-subtle uppercase tracking-[0.12em]">24h</span>
+        </div>
+        <ul className="flex flex-col">
+          {TOP_MOVERS.map((m, i) => (
+            <li
+              key={i}
+              className="flex items-center justify-between gap-3 border-t border-line-subtle px-5 py-2.5 first:border-t-0"
+            >
+              <div className="min-w-0 truncate text-sm text-fg">{m.label}</div>
+              <div className="flex items-center gap-3 text-right">
+                <Delta value={m.change} size="sm" />
+                <span className="text-sm tabular text-fg-muted">{m.price}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </TileCard>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Trending market card
+
+function MarketCard(props: {
+  icon: React.ReactNode;
+  title: string;
+  kind: string;
+  venue: string;
+  price: number;
+  unit: string;
+  change: number;
+  vol: string;
+  series: readonly number[];
+}) {
+  return (
+    <TileCard density="comfortable" interactive className="flex flex-col gap-4">
+      <div className="flex items-start gap-3">
+        <span className="grid size-10 shrink-0 place-items-center rounded-md border border-line bg-secondary">
+          {props.icon}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h3 className="truncate text-sm font-semibold text-fg">{props.title}</h3>
+          </div>
+          <div className="mt-0.5 truncate text-xs text-fg-muted">{props.kind}</div>
+        </div>
+        <button className="grid size-7 place-items-center rounded-md text-fg-subtle hover:bg-secondary hover:text-fg" aria-label="Save">
+          <Star className="size-3.5" strokeWidth={1.75} />
+        </button>
+      </div>
+
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <Numeric weight="display" size="1.75rem">${props.price.toFixed(2)}</Numeric>
+          <div className="mt-1 flex items-center gap-2 text-xs">
+            <Delta value={props.change} size="sm" />
+            <span className="text-fg-subtle">{props.unit}</span>
+          </div>
+        </div>
+        <Sparkline
+          data={props.series}
+          width={120}
+          height={40}
+          tone={props.change >= 0 ? "up" : "down"}
+          emphasizeLast
+          strokeWidth={1.5}
+        />
+      </div>
+
+      <div className="flex items-center justify-between border-t border-line-subtle pt-3 text-xs">
+        <span className="text-fg-subtle">{props.vol} vol · 24h</span>
+        <span className="text-fg-muted">{props.venue}</span>
+      </div>
+    </TileCard>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Bundles / watchlist / catalysts
+
+function BundlesCard() {
+  return (
+    <TileCard flush className="flex flex-col">
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <span className="text-sm font-medium text-fg">Market bundles</span>
+        <a className="text-xs text-accent hover:underline" href="#">View all →</a>
+      </div>
+      <ul className="flex flex-col">
+        {BUNDLES.map((b) => (
+          <li
+            key={b.id}
+            className="flex items-center gap-3 border-t border-line-subtle px-5 py-3.5 first:border-t-0 hover:bg-secondary/40"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
+              {b.icon}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium text-fg">{b.title}</div>
+              <div className="text-xs text-fg-subtle">{b.count} markets · {b.vol} vol</div>
+            </div>
+            <Button size="sm" variant="outline" className="h-7 text-xs">Explore</Button>
+          </li>
+        ))}
+      </ul>
+    </TileCard>
+  );
+}
+
+function WatchlistCard() {
+  return (
+    <TileCard flush className="flex flex-col">
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <span className="text-sm font-medium text-fg">Watchlist</span>
+        <a className="text-xs text-accent hover:underline" href="#">View all →</a>
+      </div>
+      <ul className="flex flex-col">
+        {WATCHLIST.map((w, i) => (
+          <li
+            key={i}
+            className="flex items-center justify-between gap-3 border-t border-line-subtle px-5 py-2.5 first:border-t-0 hover:bg-secondary/40"
+          >
+            <div className="flex min-w-0 items-center gap-2">
+              <Star className="size-3 shrink-0 fill-current text-accent" />
+              <span className="truncate text-sm text-fg">{w.label}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm tabular text-fg-muted">{w.price}</span>
+              <Delta value={w.change} size="sm" />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </TileCard>
+  );
+}
+
+function CatalystsCard() {
+  return (
+    <TileCard flush className="flex flex-col">
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <span className="text-sm font-medium text-fg">Upcoming catalysts</span>
+        <a className="text-xs text-accent hover:underline" href="#">View calendar →</a>
+      </div>
+      <ul className="flex flex-col">
+        {CATALYSTS.map((c, i) => (
+          <li
+            key={i}
+            className="flex items-center gap-3 border-t border-line-subtle px-5 py-3 first:border-t-0"
+          >
+            <div className="flex size-10 shrink-0 flex-col items-center justify-center rounded-md border border-line bg-secondary text-2xs font-mono uppercase tracking-[0.06em] text-fg-muted">
+              <span className="leading-none">{c.date.split(" ")[0]}</span>
+              <span className="leading-none mt-0.5 text-fg">{c.date.split(" ")[1]}</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium text-fg">{c.title}</div>
+              <div className="text-2xs text-fg-subtle">All day · global</div>
+            </div>
+            <span className={cn(
+              "rounded-sm border px-1.5 py-0.5 text-2xs font-medium",
+              c.tag === "Major" ? "border-data-down/30 bg-data-down/8 text-data-down" :
+              c.tag === "Medium" ? "border-data-warn/40 bg-data-warn/10 text-data-warn" :
+              "border-line bg-secondary text-fg-muted",
+            )}>
+              {c.tag}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </TileCard>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────── Footer
+
+function FooterBar() {
+  const stats = [
+    { label: "24h volume",     value: "$2.45B" },
+    { label: "Open interest",  value: "$1.12B" },
+    { label: "Active traders", value: "312K" },
+    { label: "Markets",        value: "8,742" },
+  ];
+  return (
+    <footer className="border-t border-line bg-background">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center gap-x-8 gap-y-2 px-6 py-4 text-xs lg:px-10">
+        <button className="inline-flex items-center gap-1 font-medium text-fg">
+          All markets <ChevronDown className="size-3" strokeWidth={2} />
+        </button>
+        {stats.map((s, i) => (
+          <span key={i} className="inline-flex items-center gap-1.5 text-fg-subtle">
+            {s.label} <span className="text-fg tabular">{s.value}</span>
+          </span>
+        ))}
+        <span className="ml-auto inline-flex items-center gap-1.5 text-fg-subtle">
+          System status
+          <span className="size-1.5 rounded-full bg-data-up dot-live" />
+          <span className="text-data-up">All systems operational</span>
+        </span>
+      </div>
+    </footer>
   );
 }
