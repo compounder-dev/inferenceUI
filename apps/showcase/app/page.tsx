@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { Button } from "@inferenceui/ui";
 import { Tabs, TabsList, TabsTrigger } from "@inferenceui/ui";
-import { Separator } from "@inferenceui/ui";
 import { TileCard } from "@inferenceui/ui";
 import { Numeric } from "@inferenceui/ui";
 import { Delta } from "@inferenceui/ui";
@@ -17,8 +16,7 @@ import { TopNav } from "@inferenceui/ui";
 import { HardwareThumb, type HardwareKind } from "@inferenceui/ui";
 import { cn } from "@inferenceui/ui";
 
-// Real product / brand image URLs. Sourced from Unsplash + Wikimedia (stable).
-// HardwareThumb gracefully falls back to a typed glyph if a URL 404s.
+// HardwareThumb falls back to a glyph if a URL 404s.
 const IMG = {
   h100:    "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=240&h=240&fit=crop&q=80",
   a100:    "https://images.unsplash.com/photo-1591489378430-ef2f4c626b35?w=240&h=240&fit=crop&q=80",
@@ -29,10 +27,6 @@ const IMG = {
   meta:    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/240px-Meta_Platforms_Inc._logo.svg.png",
   anthropic: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Claude_AI_symbol.svg/240px-Claude_AI_symbol.svg.png",
 } as const;
-
-// ──────────────────────────────────────────────────────────────────────────
-// Mock data — exchange seeds. In a real app these come from the API spine.
-// ──────────────────────────────────────────────────────────────────────────
 
 const FEATURED_SERIES = [
   3.18, 3.21, 3.19, 3.22, 3.27, 3.30, 3.34, 3.31, 3.28, 3.30,
@@ -107,8 +101,6 @@ const CATALYSTS = [
   { date: "MAY 22", title: "Frankfurt region maintenance",   tag: "Minor" },
 ];
 
-// ──────────────────────────────────────────────────────────────────────────
-
 export default function DiscoverPage() {
   const [tab, setTab] = React.useState("discover");
   const [trendingTab, setTrendingTab] = React.useState("trending");
@@ -119,14 +111,12 @@ export default function DiscoverPage() {
 
       <main className="flex-1">
         <div className="mx-auto w-full max-w-[1440px] px-6 py-8 lg:px-10 lg:py-10">
-          {/* Hero row — three columns: pitch / featured market / balance */}
           <section className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(280px,360px)_minmax(0,1fr)_minmax(280px,320px)]">
             <HeroPitch />
             <FeaturedMarket />
             <BalanceRail />
           </section>
 
-          {/* Trending markets */}
           <section className="mt-12">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <h2 className="text-xl font-semibold tracking-tight text-fg">Trending markets</h2>
@@ -159,7 +149,6 @@ export default function DiscoverPage() {
             </div>
           </section>
 
-          {/* Bundles + Watchlist + Catalysts */}
           <section className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
             <BundlesCard />
             <WatchlistCard />
@@ -172,8 +161,6 @@ export default function DiscoverPage() {
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────── Hero pitch
 
 function HeroPitch() {
   const features = [
@@ -218,12 +205,9 @@ function HeroPitch() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────── Featured market
-
 function FeaturedMarket() {
   return (
     <TileCard flush className="flex flex-col">
-      {/* Header — caps mono label + save */}
       <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
         <div className="flex items-center gap-2 font-mono text-2xs font-medium uppercase tracking-[0.14em] text-accent">
           <Zap className="size-3.5" strokeWidth={2.4} fill="currentColor" />
@@ -237,7 +221,6 @@ function FeaturedMarket() {
         </button>
       </div>
 
-      {/* Body — identity + actions left, price summary + chart right */}
       <div className="grid grid-cols-1 gap-6 px-5 pb-4 md:grid-cols-[minmax(220px,260px)_1fr]">
         <div className="flex flex-col gap-4">
           <div className="flex items-start gap-3">
@@ -283,7 +266,6 @@ function FeaturedMarket() {
         </div>
       </div>
 
-      {/* Footer — stats row + view market */}
       <div className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-line-subtle bg-secondary/40 px-5 py-3">
         <Stat label="Liquidity"  value="$11.2M" />
         <Stat label="24h volume" value="$1.84M" />
@@ -354,8 +336,6 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────── Balance rail
-
 function BalanceRail() {
   return (
     <div className="flex flex-col gap-4">
@@ -399,11 +379,15 @@ function BalanceRail() {
                 <div className="text-2xs text-fg-subtle">
                   <span className={cn(
                     "inline-flex items-center gap-1",
-                    p.side === "Active" ? "text-data-up" : p.side === "Streaming" ? "text-accent" : "text-fg-subtle",
+                    p.side === "Active" && "text-data-up",
+                    p.side === "Streaming" && "text-accent",
+                    p.side !== "Active" && p.side !== "Streaming" && "text-fg-subtle",
                   )}>
                     <span className={cn(
                       "size-1.5 rounded-full",
-                      p.side === "Active" ? "bg-data-up dot-live" : p.side === "Streaming" ? "bg-accent" : "bg-fg-subtle",
+                      p.side === "Active" && "bg-data-up dot-live",
+                      p.side === "Streaming" && "bg-accent",
+                      p.side !== "Active" && p.side !== "Streaming" && "bg-fg-subtle",
                     )} />
                     {p.side}
                   </span>
@@ -443,8 +427,6 @@ function BalanceRail() {
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────── Trending market card
 
 function MarketCard(props: MarketSeed) {
   return (
@@ -487,8 +469,6 @@ function MarketCard(props: MarketSeed) {
     </TileCard>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────── Bundles / watchlist / catalysts
 
 function BundlesCard() {
   return (
@@ -569,9 +549,9 @@ function CatalystsCard() {
             </div>
             <span className={cn(
               "rounded-sm border px-1.5 py-0.5 text-2xs font-medium",
-              c.tag === "Major" ? "border-data-down/30 bg-data-down/8 text-data-down" :
-              c.tag === "Medium" ? "border-data-warn/40 bg-data-warn/10 text-data-warn" :
-              "border-line bg-secondary text-fg-muted",
+              c.tag === "Major" && "border-data-down/30 bg-data-down/8 text-data-down",
+              c.tag === "Medium" && "border-data-warn/40 bg-data-warn/10 text-data-warn",
+              c.tag !== "Major" && c.tag !== "Medium" && "border-line bg-secondary text-fg-muted",
             )}>
               {c.tag}
             </span>
@@ -581,8 +561,6 @@ function CatalystsCard() {
     </TileCard>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────── Footer
 
 function FooterBar() {
   const stats = [

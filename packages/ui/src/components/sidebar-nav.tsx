@@ -1,21 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <SidebarNav>
- *
- * A workspace navigation column. Composed of:
- *   - SidebarNav.Root        — the outer aside
- *   - SidebarNav.Header      — workspace identity (often a <ProfileChip>)
- *   - SidebarNav.Section     — labelled group of links
- *   - SidebarNav.Item        — a link/button row with icon + label + badge
- *   - SidebarNav.Footer      — pinned slot at the bottom
- *
- * Each item adopts shadcn `<Button>`-style focus/hover treatment via
- * className composition; we don't render an actual Button so the slot
- * stays free for the consumer to drop a Link / NextLink / a inside.
- */
-
 function Root({
   className,
   width = 240,
@@ -71,9 +56,7 @@ function Section({
 }
 
 interface ItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
-  /** Optional href — if set, renders an anchor (consumers can wrap with their router Link). */
   href?: string;
-  /** Optional onClick — if set, renders a button. */
   onClick?: () => void;
   active?: boolean;
   icon?: React.ReactNode;
@@ -133,7 +116,6 @@ function Item({
       type="button"
       onClick={onClick}
       className={classes}
-      // forward HTMLAnchor extras as div attrs on the button when relevant
     >
       {inner}
     </button>

@@ -3,28 +3,9 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <CategoryNav>
- *
- * The exchange-shape category rail — a horizontal scroller of small icon +
- * label pairs. The active item gets a bottom-bar accent and slightly more
- * weight; the rest are mono-caps muted. A chevron-overflow on the right
- * hands off to a "More" dropdown when you wire one.
- *
- *   <CategoryNav
- *     value="trending"
- *     onChange={setCat}
- *     items={[
- *       { id: "trending", label: "Trending", icon: <TrendingUp /> },
- *       { id: "new",      label: "New",      icon: <Sparkles /> },
- *       …
- *     ]}
- *   />
- */
 export interface CategoryNavItem {
   id: string;
   label: React.ReactNode;
-  /** Optional leading icon. */
   icon?: React.ReactNode;
 }
 

@@ -1,18 +1,11 @@
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { cn } from "../lib/utils";
 
-/**
- * <Delta>
- *
- * A signed percentage change. Tone is automatic: positive → up,
- * negative → down, zero → neutral. Every render is tabular and mono.
- */
+// value is decimal — 0.021 renders +2.10%. Tone is automatic from sign; `invert` flips it for metrics where lower is better.
 export interface DeltaProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Decimal — 0.021 → +2.10%. */
   value: number;
   size?: "sm" | "md" | "lg";
   showArrow?: boolean;
-  /** Override the natural tone — useful when the metric inverts (lower is better). */
   invert?: boolean;
 }
 
@@ -32,13 +25,22 @@ export function Delta({
   className,
   ...props
 }: DeltaProps) {
-  const direction = value > 0 ? "up" : value < 0 ? "down" : "flat";
-  const semantic = invert ? (direction === "up" ? "down" : direction === "down" ? "up" : "flat") : direction;
+  let direction: "up" | "down" | "flat" = "flat";
+  if (value > 0) direction = "up";
+  else if (value < 0) direction = "down";
 
-  const tone =
-    semantic === "up" ? "text-data-up" : semantic === "down" ? "text-data-down" : "text-fg-subtle";
+  let semantic = direction;
+  if (invert && direction === "up") semantic = "down";
+  else if (invert && direction === "down") semantic = "up";
 
-  const Icon = direction === "up" ? ArrowUp : direction === "down" ? ArrowDown : Minus;
+  let tone = "text-fg-subtle";
+  if (semantic === "up") tone = "text-data-up";
+  else if (semantic === "down") tone = "text-data-down";
+
+  let Icon = Minus;
+  if (direction === "up") Icon = ArrowUp;
+  else if (direction === "down") Icon = ArrowDown;
+
   const formatted = `${value > 0 ? "+" : ""}${(value * 100).toFixed(2)}%`;
 
   return (

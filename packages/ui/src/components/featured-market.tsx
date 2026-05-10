@@ -10,55 +10,26 @@ import { Numeric } from "./numeric";
 import { NewsItem } from "./news-item";
 import { cn } from "../lib/utils";
 
-/**
- * <FeaturedMarket>
- *
- * The hero composition of the exchange homepage. A two-column block —
- * identity + dual primary actions on the left, a wide chart on the right
- * with optional event annotations along the price line. Below the actions
- * sits a context rail of recent news / market events.
- *
- * Designed to stack cleanly on mobile (chart below identity) and to host
- * either a binary primary action ("Launch / Watchlist") or a single CTA.
- */
-
 export interface MarketEventMarker {
-  /** Index along the data series (0..data.length-1). */
   at: number;
-  /** Short caption — e.g. "+ $5", "Launch", "+12 inst". */
   label: React.ReactNode;
-  /** Tone — defaults to up. */
   tone?: "up" | "down" | "neutral";
 }
 
 export interface FeaturedMarketProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  /** Headline question / instrument name. */
   title: React.ReactNode;
-  /** Big leading metric — e.g. "$3.42", "7% chance", "99.91%". */
   primaryValue: React.ReactNode;
-  /** Caption beneath the metric — e.g. "spot · 24h" or "chance". */
   primaryLabel?: React.ReactNode;
-  /** 24h decimal change — `0.021` → `+2.10%`. */
   change?: number;
-  /** Sparkline / chart data. */
   data: readonly number[];
-  /** Optional thumbnail / logo to the left of the title. */
   thumbnail?: React.ReactNode;
-  /** Primary action — e.g. "Launch runtime" or "Buy". */
   primaryAction?: { label: React.ReactNode; tone?: "up" | "accent"; onClick?: () => void };
-  /** Secondary action — e.g. "Watchlist", "Compare". Optional. */
   secondaryAction?: { label: React.ReactNode; tone?: "down" | "neutral"; onClick?: () => void };
-  /** Volume / footer label — e.g. "$5M Vol · Ends Dec 31, 2026". */
   footer?: React.ReactNode;
-  /** Optional event markers placed on the chart. */
   events?: readonly MarketEventMarker[];
-  /** Optional news context items rendered alongside the chart. */
   context?: readonly { source: string; logo?: React.ReactNode; title: React.ReactNode; timeAgo: string }[];
-  /** Wire the share/copy button. */
   onShare?: () => void;
-  /** Wire the bookmark/save button. */
   onSave?: () => void;
-  /** Show the bookmark in active state. */
   saved?: boolean;
 }
 
@@ -80,14 +51,12 @@ export function FeaturedMarket({
   className,
   ...rest
 }: FeaturedMarketProps) {
-  // Chart always renders in the brand accent — never auto-tones red/green.
-  // Direction is conveyed by the <Delta> chip alone.
+  // Chart is always accent. Direction lives in <Delta>, never in line colour.
   const stroke = "var(--accent)";
 
   return (
     <TileCard density="comfortable" className={cn("flex flex-col gap-0 p-0", className)} {...rest}>
       <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[minmax(280px,360px)_1fr]" data-trend="brand">
-        {/* LEFT — identity + actions + context */}
         <div className="flex min-w-0 flex-col gap-5 bg-background p-5 md:p-6">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-start gap-3">
@@ -171,7 +140,6 @@ export function FeaturedMarket({
           ) : null}
         </div>
 
-        {/* RIGHT — chart with event markers */}
         <div className="relative flex flex-col bg-background">
           <ChartArea data={data} events={events} stroke={stroke} />
           {footer ? (
@@ -231,13 +199,11 @@ function ChartArea({
     return { points, min, max, range, linePath, areaPath };
   }, [data, innerW, innerH]);
 
-  // Y-axis tick labels
   const ticks = [0, 0.25, 0.5, 0.75, 1].map((p) => min + range * p);
 
   return (
     <div ref={wrapRef} className="relative">
       <svg width={width} height={height} className="block" role="img" aria-label="Market chart">
-        {/* horizontal gridlines */}
         {ticks.map((_, i) => {
           const y = padTop + (innerH * (ticks.length - 1 - i)) / (ticks.length - 1);
           return (
@@ -264,13 +230,14 @@ function ChartArea({
           strokeLinejoin="round"
         />
 
-        {/* event markers */}
         {events.map((ev, i) => {
           const idx = Math.min(points.length - 1, Math.max(0, ev.at));
           const p = points[idx];
           if (!p) return null;
           const tone = ev.tone ?? "up";
-          const colour = tone === "up" ? "var(--data-up)" : tone === "down" ? "var(--data-down)" : "var(--fg-subtle)";
+          let colour = "var(--fg-subtle)";
+          if (tone === "up") colour = "var(--data-up)";
+          else if (tone === "down") colour = "var(--data-down)";
           return (
             <g key={i}>
               <circle cx={p[0]} cy={p[1]} r={3.5} fill={colour} stroke="var(--background)" strokeWidth={1.5} />
@@ -278,7 +245,6 @@ function ChartArea({
           );
         })}
 
-        {/* end-point dot */}
         {points.length > 0 ? (
           (() => {
             const last = points[points.length - 1]!;
@@ -287,7 +253,6 @@ function ChartArea({
         ) : null}
       </svg>
 
-      {/* Y-axis labels overlay */}
       <div className="pointer-events-none absolute inset-0">
         {ticks.map((t, i) => {
           const y = padTop + (innerH * (ticks.length - 1 - i)) / (ticks.length - 1);
@@ -304,14 +269,14 @@ function ChartArea({
         })}
       </div>
 
-      {/* event labels (positioned absolutely above markers) */}
       {events.map((ev, i) => {
         const idx = Math.min(points.length - 1, Math.max(0, ev.at));
         const p = points[idx];
         if (!p) return null;
         const tone = ev.tone ?? "up";
-        const toneClass =
-          tone === "up" ? "text-data-up" : tone === "down" ? "text-data-down" : "text-fg-subtle";
+        let toneClass = "text-fg-subtle";
+        if (tone === "up") toneClass = "text-data-up";
+        else if (tone === "down") toneClass = "text-data-down";
         return (
           <span
             key={i}

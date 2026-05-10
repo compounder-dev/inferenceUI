@@ -8,17 +8,8 @@ import { StatusPill } from "./status-pill";
 import { WireframeGpu } from "./wireframe-gpu";
 import { cn } from "../lib/utils";
 
-/**
- * <InstrumentHero>
- *
- * Opening block of an instrument detail page. Composes <TileCard>,
- * <StatusPill>, <Numeric>, <Delta>, <Sparkline>, <WireframeGpu> and
- * shadcn <Button> — every primitive in this surface traces back to
- * shadcn/ui or the InferenceUI primitive layer.
- */
 export interface InstrumentHeroProps {
   name: string;
-  /** A short classifier — e.g. "GPU · Hopper". */
   kind: string;
   hostedBy: string;
   region: string;
@@ -26,7 +17,6 @@ export interface InstrumentHeroProps {
   price: number;
   unit: string;
   secondaryUnit?: string;
-  /** Decimal change — `0.021` → `+2.10%`. */
   change: number;
   series: readonly number[];
   onWatch?: () => void;

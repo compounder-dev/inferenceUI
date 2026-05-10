@@ -4,33 +4,14 @@ import * as React from "react";
 import { Toggle } from "./primitives/toggle";
 import { cn } from "../lib/utils";
 
-/**
- * <PriceChart>
- *
- * A time-series chart tuned for inference instruments. Pure SVG, no
- * library — single hairline stroke + faint area shade + a coordinate
- * crosshair on hover that reads time, price, and delta in mono-tabular.
- *
- *   <PriceChart
- *     data={priceSeries}
- *     timeframe="24h"
- *     onTimeframeChange={setTf}
- *   />
- */
 export type Timeframe = "1h" | "6h" | "24h" | "7d" | "30d" | "90d";
 
 export interface PriceChartProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Series — equal-spaced numeric samples. */
   data: readonly number[];
-  /** Active timeframe (controlled). */
   timeframe?: Timeframe;
-  /** Timeframe change handler — receives the new timeframe. */
   onTimeframeChange?: (tf: Timeframe) => void;
-  /** Currency / unit suffix on the y-axis label, e.g. "USD / hr". */
   unitLabel?: string;
-  /** Format the y-axis price tick. Defaults to USD currency. */
   formatPrice?: (n: number) => string;
-  /** Render approx. axis tick labels — defaults to 4. */
   yTicks?: number;
   height?: number;
 }
@@ -95,8 +76,7 @@ export function PriceChart({
     return Array.from({ length: yTicks }, (_, i) => min + (range * i) / (yTicks - 1));
   }, [data.length, min, range, yTicks]);
 
-  // Charts always render in the brand accent. Direction is communicated
-  // by <Delta> chips and explicit semantic indicators — never by chart tone.
+  // Chart is always accent. Direction lives in <Delta>, never in line colour.
   const stroke = "var(--accent)";
 
   const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -144,7 +124,6 @@ export function PriceChart({
       </div>
 
       <div ref={wrapRef} className="relative overflow-hidden border border-line-subtle">
-        {/* Y-axis labels (rendered as absolute mono captions over the SVG) */}
         <div className="pointer-events-none absolute inset-0">
           {ticks.map((t, i) => {
             const y = padTop + (innerH * (yTicks - 1 - i)) / (yTicks - 1);
@@ -169,7 +148,6 @@ export function PriceChart({
           role="img"
           aria-label="Price history"
         >
-          {/* horizontal gridlines */}
           {ticks.map((_, i) => {
             const y = padTop + (innerH * (yTicks - 1 - i)) / (yTicks - 1);
             return (
@@ -186,12 +164,10 @@ export function PriceChart({
             );
           })}
 
-          {/* area shade */}
           {data.length > 1 ? (
             <path d={areaPath} fill={stroke} fillOpacity={0.05} stroke="none" />
           ) : null}
 
-          {/* line */}
           <path
             d={linePath}
             fill="none"
@@ -201,7 +177,6 @@ export function PriceChart({
             strokeLinejoin="round"
           />
 
-          {/* hover crosshair */}
           {hover ? (
             <>
               <line
@@ -229,7 +204,6 @@ export function PriceChart({
           ) : null}
         </svg>
 
-        {/* hover readout */}
         {hover && hoverValue !== null ? (
           <div
             className="pointer-events-none absolute top-2 -translate-x-1/2 whitespace-nowrap border border-line bg-card/95 px-2 py-1 font-mono text-2xs tabular shadow-sm backdrop-blur"

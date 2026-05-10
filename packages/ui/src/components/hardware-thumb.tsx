@@ -5,30 +5,14 @@ import Image from "next/image";
 import { Cpu, HardDrive, Package, Sparkles } from "lucide-react";
 import { cn } from "../lib/utils";
 
-/**
- * <HardwareThumb>
- *
- * A square instrument thumbnail. Tries to render a real product photo via
- * `next/image`; falls back to a typed iconographic glyph if the image
- * fails to load or no `image` was provided. Always renders with a 1px
- * dark/light overlay outline (per make-interfaces-feel-better §11) so it
- * sits cleanly on any surface.
- *
- *   <HardwareThumb kind="gpu" image="https://…/h100.jpg" alt="H100 GPU" size={40} />
- */
 export type HardwareKind = "gpu" | "edge" | "model" | "agent";
 
 export interface HardwareThumbProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   kind: HardwareKind;
-  /** Optional photo URL — real product shot. */
   image?: string;
-  /** Required alt text (image or glyph). */
   alt: string;
-  /** Box size in px (square). */
   size?: number;
-  /** Border radius — defaults to "md". */
   radius?: "sm" | "md" | "lg";
-  /** Make the thumbnail clickable / focusable. */
   asLink?: boolean;
 }
 
@@ -88,9 +72,7 @@ export function HardwareThumb({
         />
       )}
 
-      {/* 1px overlay outline — black @ 10% in light mode, white @ 10% in dark.
-          Using a ring keeps the outline above the image without inflating its
-          rendered box. */}
+      {/* 1px outline above the image, no box inflation. */}
       <span
         aria-hidden
         className={cn(

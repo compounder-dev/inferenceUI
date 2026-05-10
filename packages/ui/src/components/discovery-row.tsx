@@ -10,58 +10,27 @@ import { Sparkline } from "./sparkline";
 import { StatusPill } from "./status-pill";
 import { cn } from "../lib/utils";
 
-/**
- * <DiscoveryRow>
- *
- * The horizontal listing row used on index pages — markets, models,
- * agents, hardware. Wide on desktop, stacked on mobile, reads as a row
- * in a vertical stack of <TileCard>s.
- *
- *   <DiscoveryRow
- *     name="H100 80GB SXM"
- *     kind="GPU"
- *     hostedBy="Vultr · ZA-JNB"
- *     status="available"
- *     price={3.42}
- *     unit="/ hr"
- *     change={0.021}
- *     metrics={[{ label: "P50", value: "18 ms" }, { label: "Uptime", value: "99.91%" }]}
- *     series={priceSeries}
- *     onLaunch={() => …}
- *   />
- */
 export interface DiscoveryRowMetric {
   label: string;
   value: React.ReactNode;
-  /** Optional tone for the value. */
   tone?: "default" | "up" | "down" | "warn";
 }
 
 export interface DiscoveryRowProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string;
-  /** Type classifier — e.g. "GPU · Hopper" or "Model · 1M ctx". */
   kind?: string;
-  /** Provider · region label. */
   hostedBy?: string;
-  /** Optional inline icon — provider logo, hardware glyph, etc. */
   icon?: React.ReactNode;
   status: "available" | "live" | "low" | "offline";
   price: number;
   unit: string;
-  /** 24h decimal change — `0.021` → `+2.10%`. */
   change?: number;
-  /** Up to 3 secondary metrics shown inline. */
   metrics?: readonly DiscoveryRowMetric[];
-  /** Sparkline series — desktop only. */
   series?: readonly number[];
-  /** Currency formatter. Defaults to USD. */
   formatPrice?: (n: number) => string;
-  /** Save / watchlist toggle. */
   saved?: boolean;
   onSave?: () => void;
-  /** Primary launch handler. */
   onLaunch?: () => void;
-  /** Whole-row click handler — opens the detail page. */
   onSelect?: () => void;
 }
 
@@ -101,7 +70,6 @@ export function DiscoveryRow({
       )}
       {...rest}
     >
-      {/* Identity */}
       <div className="flex min-w-0 items-start gap-3">
         {icon ? (
           <span className="grid size-9 shrink-0 place-items-center rounded-sm border border-line-subtle bg-card">
@@ -117,12 +85,10 @@ export function DiscoveryRow({
         </div>
       </div>
 
-      {/* Status */}
       <div className="md:justify-self-start">
         <StatusPill tone={sb.tone} pulse={sb.pulse}>{sb.label}</StatusPill>
       </div>
 
-      {/* Inline metrics */}
       <div className="hidden flex-wrap items-baseline gap-x-4 gap-y-1 md:flex">
         {metrics.slice(0, 2).map((m, i) => (
           <span key={i} className="flex items-baseline gap-1.5 text-xs text-fg-subtle">
@@ -132,14 +98,13 @@ export function DiscoveryRow({
         ))}
       </div>
 
-      {/* Sparkline — locked to brand accent so a list of rows reads as one chrome */}
+      {/* Sparkline locked to accent — rows must read as one chrome. */}
       <div className="hidden lg:block">
         {series && series.length > 1 ? (
           <Sparkline data={series} width={120} height={28} tone="accent" emphasizeLast strokeWidth={1.1} />
         ) : null}
       </div>
 
-      {/* Price + delta */}
       <div className="flex items-baseline justify-end gap-2 md:justify-self-end md:text-right">
         <Numeric weight="medium" tone="default" prefix="USD" size="1rem">
           {price.toFixed(2)}
@@ -148,7 +113,6 @@ export function DiscoveryRow({
         {typeof change === "number" ? <Delta value={change} size="sm" className="ml-1" /> : null}
       </div>
 
-      {/* Actions */}
       <div className="flex items-center justify-end gap-1.5 md:justify-self-end">
         {onSave ? (
           <Button

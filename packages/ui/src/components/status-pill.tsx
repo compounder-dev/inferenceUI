@@ -1,13 +1,6 @@
 import { Badge } from "./primitives/badge";
 import { cn } from "../lib/utils";
 
-/**
- * <StatusPill>
- *
- * A live-status indicator built on top of shadcn `<Badge>`. The shape is
- * the badge — colour-coded dot + label, all the focus / a11y / interaction
- * polish you get from the primitive.
- */
 type Tone = "up" | "warn" | "down" | "info" | "neutral";
 
 const dotClass: Record<Tone, string> = {

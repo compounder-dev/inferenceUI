@@ -1,19 +1,9 @@
 import { Card } from "./primitives/card";
 import { cn } from "../lib/utils";
 
-/**
- * <TileCard>
- *
- * The InferenceUI surface primitive. Composes shadcn `<Card>` with rounded
- * corners, a hairline border, soft elevation, and tighter density controls.
- * Use it anywhere you'd reach for a `<Card>` — it slots into the same data
- * lineage so any shadcn helper that targets card surfaces still works.
- */
 export interface TileCardProps extends React.ComponentProps<typeof Card> {
   density?: "compact" | "comfortable" | "roomy";
-  /** Adds a soft hover elevation transition. Use on clickable surfaces. */
   interactive?: boolean;
-  /** Drop the inner padding entirely — for cards that own their own layout. */
   flush?: boolean;
 }
 

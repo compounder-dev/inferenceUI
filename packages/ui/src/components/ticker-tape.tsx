@@ -4,35 +4,18 @@ import * as React from "react";
 import { cn } from "../lib/utils";
 import { Delta } from "./delta";
 
-/**
- * <TickerTape>
- *
- * A horizontal live feed strip — scrolls a stream of price + status ticks
- * across the top of an index page. Single-line, hairline-bordered, monospace.
- *
- * The scroll uses `requestAnimationFrame` to translate a duplicated track,
- * so it never reflows on container resize and respects `prefers-reduced-motion`.
- */
 export interface TickerItem {
-  /** Short symbol — e.g. "H100·JNB". */
   symbol: string;
-  /** Pre-formatted price string (e.g. "$3.42") OR a number that will be formatted. */
   price: string | number;
-  /** Decimal change — `0.021` → `+2.10%`. */
   change?: number;
-  /** Trailing unit suffix — e.g. "/ hr", "/ 1M tok". */
   unit?: string;
-  /** Status flag — `live` adds a pulsing dot prefix. */
   live?: boolean;
 }
 
 export interface TickerTapeProps extends React.HTMLAttributes<HTMLDivElement> {
   items: readonly TickerItem[];
-  /** Pixels per second. Defaults to 30. */
   speed?: number;
-  /** Pause animation when the cursor is over the tape. Defaults to true. */
   pauseOnHover?: boolean;
-  /** Currency formatter when a numeric `price` is supplied. */
   formatPrice?: (n: number) => string;
 }
 
