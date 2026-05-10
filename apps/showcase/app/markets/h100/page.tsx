@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import { Button } from "@inferenceui/ui";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@inferenceui/ui";
-import { Separator } from "@inferenceui/ui";
 import { TopNav } from "@inferenceui/ui";
 import { TileCard } from "@inferenceui/ui";
 import { HardwareThumb } from "@inferenceui/ui";
@@ -21,8 +20,6 @@ import { ProvidersTable, type ProviderRow } from "@inferenceui/ui";
 import { BenchmarkBar } from "@inferenceui/ui";
 import { MetricCard } from "@inferenceui/ui";
 import { cn } from "@inferenceui/ui";
-
-// ─── Mock data ────────────────────────────────────────────────────────────
 
 const series24h = [
   3.14, 3.18, 3.21, 3.19, 3.22, 3.27, 3.30, 3.34, 3.31, 3.28,
@@ -81,8 +78,6 @@ const ORDER_HISTORY = [
   { id: "ord_0f6b3e", type: "Launch", region: "ZA-JNB", duration: "30m", qty: "1", price: "$1.71",  status: "Completed", created: "1d ago" },
 ];
 
-// ──────────────────────────────────────────────────────────────────────────
-
 export default function H100DetailPage() {
   const [tab, setTab] = React.useState("markets");
   const [tf, setTf] = React.useState<Timeframe>("24h");
@@ -96,7 +91,6 @@ export default function H100DetailPage() {
         <div className="mx-auto w-full max-w-[1440px] px-6 py-6 lg:px-10 lg:py-8">
           <Breadcrumb path={["Markets", "GPUs", "H100 80GB SXM"]} />
 
-          {/* Title row — matches the Polymarket detail mockup */}
           <header className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto_auto]">
             <div className="flex items-start gap-4">
               <HardwareThumb
@@ -134,7 +128,6 @@ export default function H100DetailPage() {
               </Button>
             </div>
 
-            {/* Spot price summary card — replaces Polymarket "Yes probability" */}
             <TileCard density="compact" className="flex w-full min-w-[280px] items-center gap-4 lg:w-auto">
               <div className="flex flex-col">
                 <span className="text-2xs uppercase tracking-[0.12em] text-fg-subtle">Spot price</span>
@@ -148,9 +141,7 @@ export default function H100DetailPage() {
             </TileCard>
           </header>
 
-          {/* Two-col body */}
           <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_360px]">
-            {/* LEFT — chart, tabs, content */}
             <div className="flex flex-col gap-6">
               <TileCard density="comfortable" className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-end justify-between gap-3">
@@ -168,7 +159,6 @@ export default function H100DetailPage() {
                 />
               </TileCard>
 
-              {/* Stat row */}
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <MetricCard density="compact" label="Low · 24h"     value="$3.21" />
                 <MetricCard density="compact" label="High · 24h"    value="$3.58" />
@@ -176,7 +166,6 @@ export default function H100DetailPage() {
                 <MetricCard density="compact" label="Volume · 24h"  value="1,248" unit="GPU-hr" />
               </div>
 
-              {/* Tabs section */}
               <Tabs value={overviewTab} onValueChange={setOverviewTab}>
                 <TabsList className="gap-1 bg-transparent p-0">
                   {[
@@ -265,9 +254,9 @@ export default function H100DetailPage() {
                             <Td align="right">{o.price}</Td>
                             <Td>
                               <span className={cn(
-                                o.status === "Completed" ? "text-data-up" :
-                                o.status === "Active"    ? "text-accent" :
-                                "text-fg-muted",
+                                o.status === "Completed" && "text-data-up",
+                                o.status === "Active" && "text-accent",
+                                o.status !== "Completed" && o.status !== "Active" && "text-fg-muted",
                               )}>
                                 {o.status}
                               </span>
@@ -282,7 +271,6 @@ export default function H100DetailPage() {
               </Tabs>
             </div>
 
-            {/* RIGHT — sticky launch rail */}
             <aside className="space-y-4 xl:sticky xl:top-20 xl:self-start">
               <LaunchPanel unitPrice={3.42} unit="/ hr" available={6} />
             </aside>
@@ -294,8 +282,6 @@ export default function H100DetailPage() {
     </div>
   );
 }
-
-// ─── Helpers ───────────────────────────────────────────────────────────────
 
 function Breadcrumb({ path }: { path: string[] }) {
   return (
@@ -353,6 +339,3 @@ function FooterBar() {
     </footer>
   );
 }
-
-// Drop the `Separator` import warning — avoid removing if other parts of file use it.
-void Separator;

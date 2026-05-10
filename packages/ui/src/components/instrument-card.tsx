@@ -7,35 +7,17 @@ import { Delta } from "./delta";
 import { Sparkline } from "./sparkline";
 import { cn } from "../lib/utils";
 
-/**
- * <InstrumentCard>
- *
- * Compact instrument tile for grid views — search results, watchlists,
- * feature rails. Composes <TileCard>, <StatusPill>, <Numeric>, <Delta>,
- * <Sparkline>, and shadcn <Button>.
- *
- * The whole card is keyboard-clickable when `href` or `onClick` is set.
- */
 export interface InstrumentCardProps extends Omit<React.ComponentProps<typeof TileCard>, "onClick"> {
-  /** Instrument name (top of card). */
   name: string;
-  /** Type / classifier — e.g. "GPU · Hopper". */
   kind?: string;
-  /** Provider · region. */
   hostedBy?: string;
   region?: string;
   status: "available" | "live" | "low" | "offline";
-  /** Numeric price. */
   price: number;
-  /** Per-unit string — e.g. "/ hr". */
   unit: string;
-  /** Decimal change — e.g. `0.021` → `+2.10%`. */
   change?: number;
-  /** Sparkline series. */
   series?: readonly number[];
-  /** Primary action handler — renders a Launch button if set. */
   onLaunch?: () => void;
-  /** Make the entire surface clickable. */
   onClick?: () => void;
 }
 

@@ -3,17 +3,9 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <TagPills>
- *
- * A horizontal scrolling rail of category chips. Used above dense list
- * surfaces to switch corpus (All / Hardware / Models / Agents / Sandboxes…).
- * Single-select. The active chip is the only filled one.
- */
 export interface TagPillItem {
   id: string;
   label: React.ReactNode;
-  /** Optional inline count, e.g. "243". */
   count?: number | string;
 }
 

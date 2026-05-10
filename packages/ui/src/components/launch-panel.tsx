@@ -11,22 +11,10 @@ import { QuantityStepper } from "./quantity-stepper";
 import { Numeric } from "./numeric";
 import { cn } from "../lib/utils";
 
-/**
- * <LaunchPanel>
- *
- * The right-rail action panel on an instrument detail page. Two top-level
- * modes — Launch (interactive runtime) and Rent (longer-form lease) — and
- * a billing toggle (on-demand / reserved). Renders an estimate readout
- * and a primary `Launch` CTA, plus an "Or use API" code-block fallback.
- */
 export interface LaunchPanelProps extends React.ComponentProps<typeof TileCard> {
-  /** Per-unit price in USD. */
   unitPrice: number;
-  /** Unit string — e.g. "/ hr" or "/ 1M tok". */
   unit: string;
-  /** Available stock — drives the quantity stepper max. */
   available?: number;
-  /** Code block snippet shown under "Or use API". */
   apiSnippet?: string;
 }
 
@@ -189,9 +177,7 @@ function ApiSnippet({ snippet }: { snippet: string }) {
       await navigator.clipboard.writeText(snippet);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
-    } catch {
-      // ignore — clipboard not available
-    }
+    } catch {}
   };
   return (
     <div className="flex flex-col gap-2">

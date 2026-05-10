@@ -3,13 +3,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <CarouselDots>
- *
- * Five-dot horizontal indicator. Click to jump. Designed to live beneath
- * a featured-market carousel and stay out of the way when there's only
- * one slide.
- */
 export interface CarouselDotsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
   count: number;
   active: number;

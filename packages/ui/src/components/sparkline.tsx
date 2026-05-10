@@ -1,13 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <Sparkline>
- *
- * Pure-SVG line chart. No fill, no endpoint dot, no glow — a single
- * hairline stroke. The signature treatment: the last segment optionally
- * brightens to the accent so the eye lands on "now".
- */
 type Tone = "auto" | "up" | "down" | "neutral" | "accent";
 
 const stroke: Record<Exclude<Tone, "auto">, string> = {
@@ -22,11 +15,8 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   width?: number;
   height?: number;
   tone?: Tone;
-  /** Highlight the last segment in the accent colour. */
   emphasizeLast?: boolean;
-  /** Stroke width. */
   strokeWidth?: number;
-  /** Render an extremely subtle area beneath the line. */
   shade?: boolean;
 }
 
@@ -44,7 +34,11 @@ export function Sparkline({
   const resolvedTone = React.useMemo<Exclude<Tone, "auto">>(() => {
     if (tone !== "auto") return tone;
     if (data.length < 2) return "neutral";
-    return data[data.length - 1]! > data[0]! ? "up" : data[data.length - 1]! < data[0]! ? "down" : "neutral";
+    const last = data[data.length - 1]!;
+    const first = data[0]!;
+    if (last > first) return "up";
+    if (last < first) return "down";
+    return "neutral";
   }, [data, tone]);
 
   const { path, areaPath, lastPath } = React.useMemo(() => {

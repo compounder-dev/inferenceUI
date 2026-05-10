@@ -6,28 +6,11 @@ import { Button } from "./primitives/button";
 import { TileCard } from "./tile-card";
 import { cn } from "../lib/utils";
 
-/**
- * <AdonaiDownloadCard>
- *
- * The hero promotion of the local inference OS. Designed as a single,
- * editorial container — not a generic "download" widget. Renders a
- * brutalist schematic on the left (a wireframe rack) and a tight identity
- * + version + downloads block on the right.
- *
- * Sized for full-bleed homepage placement. Mobile collapses the schematic
- * above the actions. Theme-aware: the schematic uses `currentColor` so it
- * inherits the surrounding accent.
- */
 export interface AdonaiDownloadCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Tagline shown beneath the headline. */
   tagline?: React.ReactNode;
-  /** Version string — e.g. "v0.4.0 · Apple Silicon". */
   version?: string;
-  /** macOS download URL. */
   macUrl?: string;
-  /** CLI install command — copied to clipboard with one click. */
   cli?: string;
-  /** Override the headline. */
   headline?: React.ReactNode;
 }
 
@@ -66,12 +49,10 @@ export function AdonaiDownloadCard({
       />
 
       <div className="relative grid grid-cols-1 items-stretch gap-8 p-6 md:grid-cols-[minmax(240px,1fr)_minmax(280px,1.2fr)] md:p-8">
-        {/* schematic left */}
         <div className="relative flex items-center justify-center">
           <Schematic className="w-full max-w-md text-accent" />
         </div>
 
-        {/* identity right */}
         <div className="flex flex-col">
           <div className="flex items-center gap-2 font-mono text-2xs uppercase tracking-[0.18em] text-accent">
             <span className="size-1.5 rounded-full bg-accent shadow-[0_0_12px_var(--accent)]" />
@@ -127,9 +108,7 @@ function CliCopy({ cli }: { cli: string }) {
       await navigator.clipboard.writeText(cli);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
-    } catch {
-      // ignore
-    }
+    } catch {}
   };
   return (
     <button

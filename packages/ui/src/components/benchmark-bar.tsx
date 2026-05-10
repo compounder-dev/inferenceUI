@@ -1,25 +1,12 @@
 import { cn } from "../lib/utils";
 
-/**
- * <BenchmarkBar>
- *
- * A horizontal proportional bar for benchmark scores. Higher value renders
- * a longer bar; the value is shown right-aligned in tabular mono.
- *
- *   <BenchmarkBar label="LLM inference" value={2843} unit="tok/s" max={3500} />
- */
 export interface BenchmarkBarProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
   value: number;
-  /** Optional unit suffix shown after the value. */
   unit?: string;
-  /** Maximum scale — controls the bar fill. Defaults to value (full bar). */
   max?: number;
-  /** Optional comparison reference — e.g. "+15 vs prev". */
   delta?: React.ReactNode;
-  /** Tone for the bar fill. Defaults to "accent". */
   tone?: "accent" | "up" | "down" | "neutral";
-  /** Format the numeric value. */
   format?: (n: number) => string;
 }
 

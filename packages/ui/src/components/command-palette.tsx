@@ -6,25 +6,13 @@ import { Input } from "./primitives/input";
 import { Search } from "lucide-react";
 import { cn } from "../lib/utils";
 
-/**
- * <CommandPalette>
- *
- * Global ⌘K. Built on shadcn `<Dialog>` + a filterable list. Supports
- * keyboard nav (↑ / ↓ / ↵ / Esc) and group headers. The hot-key listener
- * is opt-in via the `hotkey` prop (default: ⌘K / Ctrl+K).
- */
 export interface CommandItem {
   id: string;
   label: string;
-  /** Group / section header — items with the same group cluster together. */
   group?: string;
-  /** Optional leading icon. */
   icon?: React.ReactNode;
-  /** Optional secondary line, e.g. command path. */
   hint?: React.ReactNode;
-  /** Trailing keyboard shortcut chip text, e.g. "⌘L". */
   shortcut?: string;
-  /** Hidden tokens to match additional keywords. */
   keywords?: readonly string[];
   onSelect?: () => void;
 }
@@ -35,9 +23,7 @@ export interface CommandPaletteProps {
   items: readonly CommandItem[];
   placeholder?: string;
   emptyMessage?: React.ReactNode;
-  /** Wire the global ⌘K / Ctrl+K hotkey. Pass `false` to handle externally. */
   hotkey?: boolean;
-  /** Custom title — used by screen readers. */
   title?: string;
 }
 

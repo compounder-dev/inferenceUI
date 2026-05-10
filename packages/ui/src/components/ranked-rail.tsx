@@ -6,43 +6,21 @@ import { TileCard } from "./tile-card";
 import { Delta } from "./delta";
 import { cn } from "../lib/utils";
 
-/**
- * <RankedRail>
- *
- * The right-rail vertical leaderboard — "Hot models", "Trending compute",
- * "Live activity". Numbered rows with a primary value, an optional fire
- * indicator for hot items, and a drill-in chevron.
- *
- *   <RankedRail
- *     title="Hot models"
- *     items={hotModels}
- *     onSelect={…}
- *     viewAllHref="/markets?type=models"
- *   />
- */
 export interface RankedItem {
   id: string;
   label: React.ReactNode;
-  /** Primary trailing value — e.g. "$141K · 24h". */
   value: React.ReactNode;
-  /** Optional secondary line. */
   meta?: React.ReactNode;
-  /** Optional decimal change shown beneath the value. */
   change?: number;
-  /** When true, renders the flame icon next to the value. */
   hot?: boolean;
-  /** Optional thumbnail / avatar at the leading edge. */
   thumbnail?: React.ReactNode;
 }
 
 export interface RankedRailProps extends Omit<React.ComponentProps<typeof TileCard>, "title" | "onSelect"> {
   title: React.ReactNode;
   items: readonly RankedItem[];
-  /** Click handler per row. */
   onSelect?: (item: RankedItem) => void;
-  /** "View all" link href. Renders a chevron in the header. */
   viewAllHref?: string;
-  /** Override the rank-number rendering. Defaults to two-digit padded integers. */
   formatRank?: (i: number) => React.ReactNode;
 }
 

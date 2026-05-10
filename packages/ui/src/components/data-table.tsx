@@ -12,37 +12,17 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { cn } from "../lib/utils";
 
-/**
- * <DataTable>
- *
- * A dense, sortable, sticky-headed list. Built directly on shadcn
- * `<Table>` so it inherits `<table>` semantics, screen-reader behaviour,
- * and the styling baseline. Every row gets `data-slot="data-row"` so
- * surrounding code can target it for selection / keyboard nav.
- *
- *   const columns: DataColumn<Row>[] = [
- *     { key: "name",  header: "Name",  cell: r => r.name },
- *     { key: "price", header: "Price", align: "right", tabular: true,
- *       sortable: true, accessor: r => r.price },
- *   ];
- *
- *   <DataTable rows={rows} columns={columns} rowKey={r => r.id} />
- */
-
 export type SortDir = "asc" | "desc";
 
 export interface DataColumn<Row> {
   key: string;
   header: React.ReactNode;
   cell?: (row: Row) => React.ReactNode;
-  /** When sortable, supply an accessor that returns a comparable value. */
   sortable?: boolean;
   accessor?: (row: Row) => string | number;
   align?: "left" | "right" | "center";
   width?: string;
-  /** Apply tabular numerics to the cell. */
   tabular?: boolean;
-  /** Hide on mobile (below md). */
   hideBelow?: "sm" | "md" | "lg";
 }
 
@@ -51,13 +31,9 @@ export interface DataTableProps<Row> extends React.HTMLAttributes<HTMLDivElement
   columns: readonly DataColumn<Row>[];
   rowKey: (row: Row, i: number) => string;
   onRowClick?: (row: Row) => void;
-  /** Initial sort. */
   defaultSort?: { key: string; dir: SortDir };
-  /** Sticky header — defaults to true. */
   stickyHeader?: boolean;
-  /** Empty-state slot. */
   empty?: React.ReactNode;
-  /** Hide divider line between rows. */
   borderless?: boolean;
 }
 
@@ -122,13 +98,12 @@ export function DataTable<Row>({
             {columns.map((c) => {
               const sortable = c.sortable && c.accessor;
               const active = sort?.key === c.key;
-              const Arrow = !sortable
-                ? null
-                : !active
-                  ? ArrowUpDown
-                  : sort?.dir === "asc"
-                    ? ArrowUp
-                    : ArrowDown;
+              let Arrow: typeof ArrowUp | null = null;
+              if (sortable) {
+                if (!active) Arrow = ArrowUpDown;
+                else if (sort?.dir === "asc") Arrow = ArrowUp;
+                else Arrow = ArrowDown;
+              }
               return (
                 <TableHead
                   key={c.key}

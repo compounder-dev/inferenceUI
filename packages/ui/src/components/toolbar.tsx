@@ -5,29 +5,14 @@ import { Input } from "./primitives/input";
 import { Bell, HelpCircle, Search, Zap } from "lucide-react";
 import { cn } from "../lib/utils";
 
-/**
- * <Toolbar>
- *
- * Page-level top bar. Renders an optional breadcrumb on the left, a
- * keyboard-shortcut search field in the middle, secondary icon actions,
- * and a primary CTA on the right.
- *
- * Children of `actions` are appended after the bell. Children of
- * `primary` replaces the default Launch CTA.
- */
 export interface ToolbarProps extends React.HTMLAttributes<HTMLElement> {
   breadcrumb?: React.ReactNode;
-  /** Bind a search-input to your own state. */
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
-  /** Replace the default `⌘K` shortcut hint. */
   searchHint?: React.ReactNode;
-  /** Hide the search field entirely. */
   hideSearch?: boolean;
-  /** Slot rendered before the primary CTA — e.g. extra icon buttons. */
   actions?: React.ReactNode;
-  /** Override the primary CTA. Defaults to `Launch runtime`. */
   primary?: React.ReactNode;
 }
 

@@ -3,26 +3,11 @@
 import { useEffect, useState } from "react";
 import { cn } from "../lib/utils";
 
-/**
- * <CoordStrip>
- *
- * A top-of-page strip that renders system identity, region, and live UTC
- * timestamp in mono caps. It exists to ground every page in a
- * mission-critical operational frame: where am I, what region, what time,
- * what state.
- *
- * Always lives inside a 1px hairline-bordered row.
- */
 export interface CoordStripProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** First slot, e.g. "INFERENCE.EX". */
   system?: string;
-  /** Second slot, e.g. "ZA-JNB". */
   region?: string;
-  /** Right-side state indicator label, e.g. "ALL SYSTEMS OPERATIONAL". */
   state?: string;
-  /** State tone — matches the leading dot. */
   tone?: "up" | "warn" | "down" | "info";
-  /** Override the live clock with a static string. */
   fixedTime?: string;
 }
 

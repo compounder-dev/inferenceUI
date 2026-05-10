@@ -3,32 +3,15 @@ import { Sparkline } from "./sparkline";
 import { Delta } from "./delta";
 import { cn } from "../lib/utils";
 
-/**
- * <MetricCard>
- *
- * A tile that pairs a label, a value, an optional change, and an optional
- * sparkline. Use for KPI grids, side rails, instrument detail panels.
- *
- * Composes <TileCard> (which extends shadcn <Card>) so every metric tile
- * lives inside the same surface lineage.
- */
 export interface MetricCardProps extends Omit<React.ComponentProps<typeof TileCard>, "size"> {
-  /** Caption above the value. */
   label: React.ReactNode;
-  /** Primary numeric — string or pre-rendered ReactNode. */
   value: React.ReactNode;
-  /** Optional unit suffix shown next to the value. */
   unit?: React.ReactNode;
-  /** Optional decimal change — e.g. `0.024` → `+2.40%`. */
   change?: number;
-  /** When true, an "up" change reads as a negative outcome (lower-is-better metrics). */
   invertChange?: boolean;
-  /** Optional secondary line beneath the value. */
   hint?: React.ReactNode;
-  /** Optional sparkline series. */
   spark?: readonly number[];
   sparkTone?: "auto" | "up" | "down" | "accent" | "neutral";
-  /** Bigger numeric size — for hero or top-of-page placements. */
   size?: "sm" | "md" | "lg";
 }
 

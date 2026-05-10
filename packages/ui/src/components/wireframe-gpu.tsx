@@ -1,14 +1,6 @@
 import { cn } from "../lib/utils";
 
-/**
- * <WireframeGpu>
- *
- * A purely SVG, line-art rendering of a GPU module — used as the hero
- * artwork on instrument pages. Drawn in 0.5px hairlines on the accent
- * tone with a faint inner glow so the form reads at any size.
- */
 export interface WireframeGpuProps extends React.SVGAttributes<SVGSVGElement> {
-  /** Override the line tone. Defaults to the amber accent. */
   tone?: string;
 }
 

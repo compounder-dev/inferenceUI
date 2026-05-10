@@ -5,13 +5,6 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "./primitives/button";
 import { cn } from "../lib/utils";
 
-/**
- * <QuantityStepper>
- *
- * A tabular numeric input with `−` / `+` flank buttons. Composes shadcn
- * `<Button>` for the steppers and a native `<input type="number">` so
- * every behaviour lines up with form expectations.
- */
 export interface QuantityStepperProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "onChange" | "value" | "defaultValue"> {
   value: number;
@@ -19,7 +12,6 @@ export interface QuantityStepperProps
   min?: number;
   max?: number;
   step?: number;
-  /** Optional hint shown beneath the field, e.g. "6 available". */
   hint?: React.ReactNode;
 }
 

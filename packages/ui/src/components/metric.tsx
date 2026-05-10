@@ -1,16 +1,9 @@
 import { cn } from "../lib/utils";
 import { Delta } from "./delta";
 
-/**
- * <Metric>
- *
- * A "value with caption" pattern. Used in stat tile grids, dense panels,
- * and side rails. Strict order: label → value → optional change.
- */
 export interface MetricProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
   value: React.ReactNode;
-  /** Decimal change — e.g. `0.021` → `+2.10%`. */
   change?: number;
   hint?: React.ReactNode;
   align?: "start" | "end";

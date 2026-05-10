@@ -7,39 +7,21 @@ import { DataTable, type DataColumn } from "./data-table";
 import { Delta } from "./delta";
 import { StatusPill } from "./status-pill";
 
-/**
- * <ProvidersTable>
- *
- * Lists every provider that offers a given instrument — venue / region /
- * price / latency / capacity / status. Use on instrument detail pages so
- * a buyer can pick a provider directly.
- *
- * Built on <DataTable>, which itself extends shadcn `<Table>`.
- */
 export interface ProviderRow {
   id: string;
-  /** Provider name — e.g. "Vultr", "CapeCompute". */
   name: string;
-  /** Region or location label — e.g. "ZA-JNB" or "Cape Town, ZA". */
   region: string;
-  /** Optional region flag emoji or icon node. */
   flag?: React.ReactNode;
   status: "available" | "live" | "low" | "offline";
-  /** Hourly price in USD. */
   price: number;
-  /** 24h decimal change. */
   change?: number;
-  /** P50 latency in milliseconds. */
   latencyMs: number;
-  /** Capacity used / total. */
   capacity?: { used: number; total: number };
 }
 
 export interface ProvidersTableProps extends React.HTMLAttributes<HTMLDivElement> {
   providers: readonly ProviderRow[];
-  /** Per-row launch handler. */
   onLaunch?: (row: ProviderRow) => void;
-  /** Currency formatter. Defaults to USD. */
   formatPrice?: (n: number) => string;
 }
 
@@ -159,8 +141,9 @@ export function ProvidersTable({
 
 function CapacityCell({ used, total }: { used: number; total: number }) {
   const ratio = total > 0 ? used / total : 0;
-  const tone =
-    ratio >= 0.9 ? "bg-data-down" : ratio >= 0.6 ? "bg-data-warn" : "bg-data-up";
+  let tone = "bg-data-up";
+  if (ratio >= 0.9) tone = "bg-data-down";
+  else if (ratio >= 0.6) tone = "bg-data-warn";
   return (
     <div className="flex items-center gap-2">
       <span className="font-mono text-xs tabular text-fg">

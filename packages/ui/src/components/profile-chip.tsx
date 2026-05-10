@@ -1,23 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./primitives/avatar";
 import { cn } from "../lib/utils";
 
-/**
- * <ProfileChip>
- *
- * Identity row built on top of shadcn `<Avatar>`. Shows an avatar plus a
- * primary line (name / workspace) and an optional secondary line
- * (handle / email). Designed for sidebars, topbars, account menus.
- */
 export interface ProfileChipProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string;
-  /** Optional secondary line — handle / email / role. */
   meta?: React.ReactNode;
-  /** Image URL. Falls back to initials when missing or fails to load. */
   src?: string;
-  /** Override the auto-generated initials. */
   initials?: string;
   size?: "sm" | "md" | "lg";
-  /** Stack the meta row underneath (default) or hide it. */
   showMeta?: boolean;
 }
 

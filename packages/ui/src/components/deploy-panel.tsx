@@ -7,29 +7,16 @@ import { Check, Copy } from "lucide-react";
 import { TileCard } from "./tile-card";
 import { cn } from "../lib/utils";
 
-/**
- * <DeployPanel>
- *
- * The "deployment commands" surface — picks a runtime framework
- * (vLLM / SGLang / Docker / Kubernetes) and shows a copyable code block
- * for that target. Composes shadcn `<Tabs>` + `<Button>` + `<TileCard>`.
- */
 export interface DeploySnippet {
-  /** Tab key. */
   id: string;
-  /** Tab label. */
   label: string;
-  /** The code block content. */
   code: string;
-  /** Optional language hint shown at the bottom-left. */
   language?: string;
 }
 
 export interface DeployPanelProps extends Omit<React.ComponentProps<typeof TileCard>, "children" | "title"> {
   snippets: DeploySnippet[];
-  /** Optional title above the tabs. */
   title?: React.ReactNode;
-  /** Optional default tab. */
   defaultTab?: string;
 }
 
@@ -77,9 +64,7 @@ function Snippet({ snippet, active }: { snippet: DeploySnippet; active: boolean 
       await navigator.clipboard.writeText(snippet.code);
       setCopied(true);
       setTimeout(() => setCopied(false), 1400);
-    } catch {
-      // ignore
-    }
+    } catch {}
   };
 
   return (

@@ -19,7 +19,6 @@ export interface TopNavProps {
   active?: string;
   onChange?: (id: string) => void;
   items?: ReadonlyArray<{ id: string; label: string }>;
-  /** Wallet / account label shown on the right. Falls back to a truncated address. */
   account?: { initials: string; label: string };
 }
 
