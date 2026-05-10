@@ -5,7 +5,6 @@ import { Activity, Bell, ChevronDown, HelpCircle, Search } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ThemeSwitch } from "./theme-switch";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_ITEMS = [
@@ -73,8 +72,6 @@ export function TopNav({
               ⌘K
             </kbd>
           </div>
-
-          <ThemeSwitch className="hidden lg:inline-flex" />
 
           <Button size="icon-sm" variant="ghost" aria-label="Notifications" className="relative">
             <Bell className="size-4" strokeWidth={1.75} />
