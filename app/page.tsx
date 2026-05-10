@@ -18,6 +18,8 @@ import { SidebarNav } from "@/components/iui/sidebar-nav";
 import { ThemeSwitch } from "@/components/iui/theme-switch";
 import { Toolbar } from "@/components/iui/toolbar";
 import { TileCard } from "@/components/iui/tile-card";
+import { ProvidersTable, type ProviderRow } from "@/components/iui/providers-table";
+import { BenchmarkBar } from "@/components/iui/benchmark-bar";
 
 const series24h = [
   3.14, 3.18, 3.21, 3.19, 3.22, 3.27, 3.30, 3.34, 3.31, 3.28,
@@ -31,6 +33,20 @@ const uptimeSeries  = [99.85, 99.86, 99.88, 99.87, 99.89, 99.91, 99.92, 99.91];
 const a100Series    = [2.40, 2.41, 2.43, 2.42, 2.44, 2.45, 2.46, 2.45, 2.44, 2.45, 2.46, 2.45];
 const m2Series      = [0.50, 0.49, 0.48, 0.47, 0.47, 0.46, 0.46, 0.46, 0.45, 0.45, 0.45, 0.45];
 const opusSeries    = [14.8, 14.9, 15.0, 15.1, 15.0, 15.0, 15.0, 15.0, 15.0, 15.0, 15.0];
+
+const PROVIDER_ROWS: ProviderRow[] = [
+  { id: "vultr-jnb",    name: "Vultr",       region: "ZA-JNB", flag: "🇿🇦", status: "available", price: 3.42, change: 0.021, latencyMs: 18, capacity: { used: 6, total: 16 } },
+  { id: "vultr-cpt",    name: "Vultr",       region: "ZA-CPT", flag: "🇿🇦", status: "available", price: 3.58, change: 0.014, latencyMs: 42, capacity: { used: 1, total: 6 } },
+  { id: "edgelab-fra",  name: "EdgeLab",     region: "EU-FRA", flag: "🇩🇪", status: "live",      price: 3.71, change: -0.008, latencyMs: 186, capacity: { used: 0, total: 4 } },
+  { id: "compute-iad",  name: "CapeCompute", region: "US-IAD", flag: "🇺🇸", status: "low",       price: 3.84, change: 0.032,  latencyMs: 142, capacity: { used: 7, total: 8 } },
+];
+
+const BENCHMARKS = [
+  { label: "LLM inference",      value: 2843, unit: "tok/s",  max: 3500, delta: "+15" },
+  { label: "Stable Diffusion",   value: 18.7, unit: "it/s",   max: 25,   delta: "+0.8", format: (n: number) => n.toFixed(1) },
+  { label: "FP16 TFLOPS",        value: 989,  unit: "TF",     max: 1200, delta: "—" },
+  { label: "FP8 TFLOPS",         value: 1979, unit: "TF",     max: 2400, delta: "+12" },
+];
 
 const SERIES_BY_TF: Record<Timeframe, readonly number[]> = {
   "1h":  series24h.slice(-12),
@@ -214,6 +230,41 @@ export default function Home() {
                       sparkTone="accent"
                     />
                   </div>
+
+                  <section className="mt-12">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <h2 className="text-md font-medium text-fg">Providers</h2>
+                        <p className="mt-1 max-w-xl text-sm text-fg-muted">
+                          Every venue currently offering this instrument. Sort by price, latency, or capacity.
+                        </p>
+                      </div>
+                    </div>
+                    <ProvidersTable
+                      providers={PROVIDER_ROWS}
+                      onLaunch={() => {}}
+                      className="mt-4"
+                    />
+                  </section>
+
+                  <section className="mt-12">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <h2 className="text-md font-medium text-fg">Benchmarks</h2>
+                        <p className="mt-1 max-w-xl text-sm text-fg-muted">
+                          Reference scores measured on identical workloads.
+                        </p>
+                      </div>
+                      <span className="font-mono text-xs tabular text-fg-subtle">
+                        higher is better
+                      </span>
+                    </div>
+                    <TileCard density="comfortable" className="mt-4 flex flex-col gap-3">
+                      {BENCHMARKS.map((b) => (
+                        <BenchmarkBar key={b.label} {...b} />
+                      ))}
+                    </TileCard>
+                  </section>
 
                   <section className="mt-12">
                     <h2 className="text-md font-medium text-fg">Deploy</h2>
