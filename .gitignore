@@ -45,3 +45,11 @@ next-env.d.ts
 .cursor/
 .windsurf/
 .vscode/
+
+# package build artefacts
+packages/*/dist/
+packages/*/node_modules/
+
+# planning / brainstorm scratch (not source of truth)
+/docs/plans/
+/docs/brainstorms/
