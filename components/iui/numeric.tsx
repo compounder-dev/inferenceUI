@@ -3,18 +3,22 @@ import { cn } from "@/lib/utils";
 /**
  * <Numeric>
  *
- * The single canonical way to render a number anywhere a number matters.
- * Always tabular, always mono, opinionated about prefix/suffix slot
- * styling so prices, latency, and rates read consistently.
+ * Canonical numeric display. Always tabular. Defaults to the UI sans so
+ * numbers sit on the same line as labels without optical drift, with a
+ * `mono` weight available for monospaced data tables / code.
  */
 export interface NumericProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "prefix"> {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
-  /** Tone applied to the value (not the prefix/suffix). */
   tone?: "default" | "up" | "down" | "muted" | "accent";
-  /** Display weight — "display" uses the heavy industrial face for hero-scale numbers. */
-  weight?: "regular" | "medium" | "display";
-  /** Override font size (rem). */
+  /**
+   * `display` — big hero numerics (semibold, tight tracking)
+   * `medium` — card / inline numerics
+   * `regular` — body numerics
+   * `mono` — fixed-width data tables
+   */
+  weight?: "display" | "medium" | "regular" | "mono";
+  /** Override font size (rem, px, or any CSS length). */
   size?: string;
 }
 
@@ -24,6 +28,13 @@ const toneClass = {
   down: "text-data-down",
   muted: "text-fg-muted",
   accent: "text-accent",
+} as const;
+
+const weightClass = {
+  display: "font-semibold tracking-[-0.02em]",
+  medium: "font-medium",
+  regular: "font-normal",
+  mono: "font-mono",
 } as const;
 
 export function Numeric({
@@ -40,9 +51,8 @@ export function Numeric({
   return (
     <span
       className={cn(
-        "inline-flex items-baseline gap-1 leading-none",
-        weight === "display" ? "display" : "numeric",
-        weight === "medium" && "font-medium",
+        "inline-flex items-baseline gap-1 leading-none tabular",
+        weightClass[weight],
         toneClass[tone],
         className,
       )}
@@ -50,13 +60,13 @@ export function Numeric({
       {...props}
     >
       {prefix ? (
-        <span className="text-fg-subtle font-mono text-[0.5em] tracking-[0.14em] uppercase translate-y-[-0.1em]">
+        <span className="font-mono text-[0.5em] uppercase tracking-[0.12em] text-fg-subtle translate-y-[-0.1em]">
           {prefix}
         </span>
       ) : null}
       <span>{children}</span>
       {suffix ? (
-        <span className="text-fg-subtle font-mono text-[0.4em] tracking-[0.14em] uppercase translate-y-[-0.4em]">
+        <span className="font-mono text-[0.45em] uppercase tracking-[0.12em] text-fg-subtle translate-y-[-0.35em]">
           {suffix}
         </span>
       ) : null}

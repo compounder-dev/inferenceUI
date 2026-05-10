@@ -78,7 +78,7 @@ export function AdonaiDownloadCard({
             New · runtime
           </div>
 
-          <h2 className="display mt-3 text-5xl text-fg lg:text-6xl">{headline}</h2>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.02em] text-fg lg:text-4xl">{headline}</h2>
           <p className="mt-3 max-w-md text-md leading-relaxed text-fg-muted">{tagline}</p>
 
           <div className="mt-5 flex flex-wrap items-center gap-2 font-mono text-2xs tabular text-fg-subtle">

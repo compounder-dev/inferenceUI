@@ -57,7 +57,6 @@ export function InstrumentHero({
     >
       <TileCard
         density="comfortable"
-        gridlines
         className="relative aspect-[4/3] overflow-hidden lg:aspect-auto"
       >
         <WireframeGpu className="absolute inset-0" />
@@ -77,7 +76,7 @@ export function InstrumentHero({
 
       <TileCard density="roomy">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="display text-5xl text-fg lg:text-6xl">{name}</h1>
+          <h1 className="text-3xl font-semibold tracking-[-0.02em] text-fg lg:text-4xl">{name}</h1>
           <span className="font-mono text-xs text-fg-subtle">{kind}</span>
         </div>
 
@@ -90,7 +89,7 @@ export function InstrumentHero({
         <div className="mt-8 grid grid-cols-1 items-end gap-6 sm:grid-cols-[max-content_1fr]">
           <div>
             <div className="flex items-baseline gap-3">
-              <Numeric weight="display" prefix="USD" size="3.5rem">{price.toFixed(2)}</Numeric>
+              <Numeric weight="display" prefix="USD" size="2.5rem">{price.toFixed(2)}</Numeric>
               <span className="font-mono text-xs text-fg-subtle">{unit}</span>
             </div>
             <div className="mt-3 flex items-center gap-3 text-xs text-fg-subtle tabular">
