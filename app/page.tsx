@@ -3,7 +3,7 @@
 import * as React from "react";
 import {
   Star, ArrowDownToLine, ArrowUpFromLine,
-  Cpu, Package, HardDrive, Code, Globe,
+  Cpu, HardDrive, Code, Globe, Package,
   Activity, Zap, ChevronDown, Briefcase, ShieldCheck, FlaskConical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,21 @@ import { Numeric } from "@/components/iui/numeric";
 import { Delta } from "@/components/iui/delta";
 import { Sparkline } from "@/components/iui/sparkline";
 import { TopNav } from "@/components/iui/top-nav";
+import { HardwareThumb, type HardwareKind } from "@/components/iui/hardware-thumb";
 import { cn } from "@/lib/utils";
+
+// Real product / brand image URLs. Sourced from Unsplash + Wikimedia (stable).
+// HardwareThumb gracefully falls back to a typed glyph if a URL 404s.
+const IMG = {
+  h100:    "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=240&h=240&fit=crop&q=80",
+  a100:    "https://images.unsplash.com/photo-1591489378430-ef2f4c626b35?w=240&h=240&fit=crop&q=80",
+  l40s:    "https://images.unsplash.com/photo-1587202372616-b43abea06c2a?w=240&h=240&fit=crop&q=80",
+  macMini: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=240&h=240&fit=crop&q=80",
+  jetson:  "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=240&h=240&fit=crop&q=80",
+  rpi:     "https://images.unsplash.com/photo-1581092335397-9583eb92d232?w=240&h=240&fit=crop&q=80",
+  meta:    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/240px-Meta_Platforms_Inc._logo.svg.png",
+  anthropic: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Claude_AI_symbol.svg/240px-Claude_AI_symbol.svg.png",
+} as const;
 
 // ──────────────────────────────────────────────────────────────────────────
 // Mock data — exchange seeds. In a real app these come from the API spine.
@@ -35,37 +49,27 @@ const TRENDING_TABS = [
   { id: "open",     label: "Open weight" },
 ];
 
-const TRENDING_MARKETS = [
-  {
-    id: "h100", icon: <Cpu className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "H100 80GB SXM", kind: "GPU · Hopper", venue: "Vultr · ZA-JNB",
-    price: 3.42, unit: "/ hr", change: 0.021, vol: "$11.2M", series: [3.14, 3.18, 3.22, 3.27, 3.30, 3.34, 3.36, 3.42],
-  },
-  {
-    id: "opus-4-7", icon: <Package className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "Claude Opus 4.7", kind: "Model · 1M ctx", venue: "Anthropic · global",
-    price: 15.00, unit: "/ 1M tok", change: 0.012, vol: "$141K", series: [14.7, 14.8, 14.9, 15.0, 15.1, 15.0, 15.0],
-  },
-  {
-    id: "llama-4", icon: <Package className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "Llama 4 Instruct", kind: "Model · 128K · open", venue: "Meta · global",
-    price: 0.42, unit: "/ 1M tok", change: -0.028, vol: "$270K", series: [0.45, 0.44, 0.43, 0.42, 0.42, 0.42],
-  },
-  {
-    id: "a100", icon: <Cpu className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "A100 80GB PCIe", kind: "GPU · Ampere", venue: "Vultr · ZA-JNB",
-    price: 2.45, unit: "/ hr", change: 0.012, vol: "$5.4M", series: [2.40, 2.41, 2.43, 2.44, 2.45, 2.45, 2.45],
-  },
-  {
-    id: "m2-stb", icon: <HardDrive className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "Mac mini M2 Pro", kind: "Edge · Apple Silicon", venue: "EdgeLab · ZA-STB",
-    price: 0.45, unit: "/ hr", change: -0.031, vol: "$420K", series: [0.50, 0.49, 0.48, 0.47, 0.46, 0.45, 0.45],
-  },
-  {
-    id: "orin", icon: <HardDrive className="size-5 text-accent" strokeWidth={1.75} />,
-    title: "Jetson Orin Nano", kind: "Edge · ARM", venue: "CapeCompute · ZA-CPT",
-    price: 0.18, unit: "/ hr", change: -0.067, vol: "$210K", series: [0.22, 0.21, 0.20, 0.19, 0.18, 0.18, 0.18],
-  },
+type MarketSeed = {
+  id: string;
+  hwKind: HardwareKind;
+  image?: string;
+  title: string;
+  kind: string;
+  venue: string;
+  price: number;
+  unit: string;
+  change: number;
+  vol: string;
+  series: readonly number[];
+};
+
+const TRENDING_MARKETS: readonly MarketSeed[] = [
+  { id: "h100",     hwKind: "gpu",   image: IMG.h100,    title: "H100 80GB SXM",     kind: "GPU · Hopper",         venue: "Vultr · ZA-JNB",       price: 3.42,  unit: "/ hr",      change:  0.021, vol: "$11.2M", series: [3.14, 3.18, 3.22, 3.27, 3.30, 3.34, 3.36, 3.42] },
+  { id: "opus-4-7", hwKind: "model", image: IMG.anthropic, title: "Claude Opus 4.7", kind: "Model · 1M ctx",       venue: "Anthropic · global",   price: 15.00, unit: "/ 1M tok",  change:  0.012, vol: "$141K",  series: [14.7, 14.8, 14.9, 15.0, 15.1, 15.0, 15.0] },
+  { id: "llama-4",  hwKind: "model", image: IMG.meta,    title: "Llama 4 Instruct",   kind: "Model · 128K · open",  venue: "Meta · global",        price: 0.42,  unit: "/ 1M tok",  change: -0.028, vol: "$270K",  series: [0.45, 0.44, 0.43, 0.42, 0.42, 0.42] },
+  { id: "a100",     hwKind: "gpu",   image: IMG.a100,    title: "A100 80GB PCIe",     kind: "GPU · Ampere",         venue: "Vultr · ZA-JNB",       price: 2.45,  unit: "/ hr",      change:  0.012, vol: "$5.4M",  series: [2.40, 2.41, 2.43, 2.44, 2.45, 2.45, 2.45] },
+  { id: "m2-stb",   hwKind: "edge",  image: IMG.macMini, title: "Mac mini M2 Pro",    kind: "Edge · Apple Silicon", venue: "EdgeLab · ZA-STB",     price: 0.45,  unit: "/ hr",      change: -0.031, vol: "$420K",  series: [0.50, 0.49, 0.48, 0.47, 0.46, 0.45, 0.45] },
+  { id: "orin",     hwKind: "edge",  image: IMG.jetson,  title: "Jetson Orin Nano",   kind: "Edge · ARM",           venue: "CapeCompute · ZA-CPT", price: 0.18,  unit: "/ hr",      change: -0.067, vol: "$210K",  series: [0.22, 0.21, 0.20, 0.19, 0.18, 0.18, 0.18] },
 ];
 
 const POSITIONS = [
@@ -226,11 +230,9 @@ function FeaturedMarket() {
       <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[1fr_280px]">
         <div className="flex flex-col gap-4 bg-card px-5 py-4">
           <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent-soft text-accent">
-              <Cpu className="size-5" strokeWidth={1.75} />
-            </span>
+            <HardwareThumb kind="gpu" image={IMG.h100} alt="H100 80GB SXM" size={48} radius="md" />
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold tracking-tight text-fg">
+              <h3 className="text-balance text-lg font-semibold tracking-tight text-fg">
                 H100 80GB SXM is the most-routed GPU this week
               </h3>
               <div className="mt-1 flex items-center gap-2 text-xs text-fg-muted">
@@ -431,23 +433,11 @@ function BalanceRail() {
 
 // ─────────────────────────────────────────────────────────────────────── Trending market card
 
-function MarketCard(props: {
-  icon: React.ReactNode;
-  title: string;
-  kind: string;
-  venue: string;
-  price: number;
-  unit: string;
-  change: number;
-  vol: string;
-  series: readonly number[];
-}) {
+function MarketCard(props: MarketSeed) {
   return (
     <TileCard density="comfortable" interactive className="flex flex-col gap-4">
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-md border border-line bg-secondary">
-          {props.icon}
-        </span>
+        <HardwareThumb kind={props.hwKind} image={props.image} alt={props.title} size={40} radius="md" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3 className="truncate text-sm font-semibold text-fg">{props.title}</h3>
