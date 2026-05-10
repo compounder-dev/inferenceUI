@@ -2,11 +2,19 @@
   "name": "inferenceui",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:tokens": "bun run --cwd packages/tokens build",
+    "build:ui": "bun run --cwd packages/ui build",
+    "build:packages": "bun run build:tokens && bun run build:ui",
+    "publish:dry": "bun run build:packages && cd packages/tokens && npm publish --dry-run && cd ../ui && npm publish --dry-run"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -29,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
+    "tsup": "^8.0.0",
     "typescript": "^5"
   },
   "ignoreScripts": [
