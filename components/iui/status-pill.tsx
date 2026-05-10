@@ -1,15 +1,16 @@
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 /**
  * <StatusPill>
  *
- * A compact status indicator. A coloured dot plus a label. The chrome is
- * intentionally minimal — a hairline outline around a tabular label keeps
- * the dot doing the talking.
+ * A live-status indicator built on top of shadcn `<Badge>`. The shape is
+ * the badge — colour-coded dot + label, all the focus / a11y / interaction
+ * polish you get from the primitive.
  */
 type Tone = "up" | "warn" | "down" | "info" | "neutral";
 
-const toneStyle: Record<Tone, string> = {
+const dotClass: Record<Tone, string> = {
   up:      "bg-data-up",
   warn:    "bg-data-warn",
   down:    "bg-data-down",
@@ -17,40 +18,33 @@ const toneStyle: Record<Tone, string> = {
   neutral: "bg-fg-subtle",
 };
 
-export interface StatusPillProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface StatusPillProps extends React.ComponentProps<typeof Badge> {
   tone?: Tone;
   pulse?: boolean;
-  /** Renders a dot-only marker with no surrounding chrome. */
-  bare?: boolean;
 }
 
 export function StatusPill({
   tone = "up",
   pulse,
-  bare,
+  variant = "outline",
   className,
   children,
   ...props
 }: StatusPillProps) {
   return (
-    <span
+    <Badge
+      variant={variant}
       className={cn(
-        "inline-flex items-center gap-1.5",
-        bare
-          ? "text-[12px] text-fg-muted"
-          : "h-6 rounded-sm border border-line bg-card/40 px-2 text-[11px] text-fg-muted",
+        "h-6 gap-1.5 rounded-sm border-line bg-card/40 px-2 text-xs font-normal text-fg-muted",
         className,
       )}
       {...props}
     >
       <span
-        className={cn(
-          "relative inline-block h-1.5 w-1.5 rounded-full",
-          toneStyle[tone],
-          pulse && "dot-live",
-        )}
+        aria-hidden
+        className={cn("inline-block h-1.5 w-1.5 rounded-full", dotClass[tone], pulse && "dot-live")}
       />
       <span>{children}</span>
-    </span>
+    </Badge>
   );
 }

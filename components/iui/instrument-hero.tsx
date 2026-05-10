@@ -1,23 +1,24 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, Bookmark, Zap } from "lucide-react";
+import { TileCard } from "./tile-card";
 import { Numeric } from "./numeric";
 import { Delta } from "./delta";
 import { Sparkline } from "./sparkline";
 import { StatusPill } from "./status-pill";
 import { WireframeGpu } from "./wireframe-gpu";
+import { cn } from "@/lib/utils";
 
 /**
  * <InstrumentHero>
  *
- * Opening block of an instrument detail page. Composes:
- *   - artwork tile (left), with status overlay
- *   - identity block (right), with name / host / type
- *   - price block, big mono numerals + delta + sparkline
+ * Opening block of an instrument detail page. Composes <TileCard>,
+ * <StatusPill>, <Numeric>, <Delta>, <Sparkline>, <WireframeGpu> and
+ * shadcn <Button> — every primitive in this surface traces back to
+ * shadcn/ui or the InferenceUI primitive layer.
  */
 export interface InstrumentHeroProps {
   name: string;
-  /** A short classifier rendered subtly to the right — e.g. "GPU · Hopper". */
+  /** A short classifier — e.g. "GPU · Hopper". */
   kind: string;
   hostedBy: string;
   region: string;
@@ -25,7 +26,7 @@ export interface InstrumentHeroProps {
   price: number;
   unit: string;
   secondaryUnit?: string;
-  /** 24h change as a decimal — `0.021` → `+2.10%`. */
+  /** Decimal change — `0.021` → `+2.10%`. */
   change: number;
   series: readonly number[];
   onWatch?: () => void;
@@ -54,41 +55,34 @@ export function InstrumentHero({
         className,
       )}
     >
-      {/* Artwork tile */}
-      <div className="relative aspect-[4/3] bg-background lg:aspect-auto">
-        <div className="absolute inset-0 gridlines-fine opacity-50" />
+      <TileCard
+        density="comfortable"
+        gridlines
+        className="relative aspect-[4/3] overflow-hidden lg:aspect-auto"
+      >
         <WireframeGpu className="absolute inset-0" />
         <div className="absolute left-3 top-3">
-          <StatusPill tone={sb.tone} pulse={sb.pulse}>
-            {sb.label}
-          </StatusPill>
+          <StatusPill tone={sb.tone} pulse={sb.pulse}>{sb.label}</StatusPill>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onWatch}
-          className={cn(
-            "absolute bottom-3 left-3 right-3 flex items-center justify-center gap-1.5",
-            "h-8 rounded-sm border border-line-subtle bg-card/40 text-[12px] text-fg-muted backdrop-blur",
-            "transition-[border-color,color,background] duration-150",
-            "hover:border-line-strong hover:bg-card/80 hover:text-fg",
-          )}
+          className="absolute bottom-3 left-3 right-3 gap-1.5 border-line-subtle bg-card/40 backdrop-blur"
         >
           <Bookmark className="size-3.5" strokeWidth={1.75} />
           Add to watchlist
-        </button>
-      </div>
+        </Button>
+      </TileCard>
 
-      {/* Identity + numeric block */}
-      <div className="bg-background p-6 lg:p-8">
-        <div className="flex items-center justify-between gap-4">
+      <TileCard density="roomy">
+        <div className="flex items-start justify-between gap-4">
           <h1 className="display text-5xl text-fg lg:text-6xl">{name}</h1>
-          <span className="font-mono text-[11px] tracking-[0.06em] text-fg-subtle">{kind}</span>
+          <span className="font-mono text-xs text-fg-subtle">{kind}</span>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-fg-muted">
-          <span>
-            Hosted by <span className="text-fg">{hostedBy}</span>
-          </span>
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-fg-muted">
+          <span>Hosted by <span className="text-fg">{hostedBy}</span></span>
           <span className="text-fg-subtle/40">·</span>
           <span>{region}</span>
         </div>
@@ -96,14 +90,10 @@ export function InstrumentHero({
         <div className="mt-8 grid grid-cols-1 items-end gap-6 sm:grid-cols-[max-content_1fr]">
           <div>
             <div className="flex items-baseline gap-3">
-              <Numeric weight="display" tone="default" prefix="USD" size="3.5rem">
-                {price.toFixed(2)}
-              </Numeric>
-              <span className="font-mono text-[11px] tracking-[0.04em] text-fg-subtle">
-                {unit}
-              </span>
+              <Numeric weight="display" prefix="USD" size="3.5rem">{price.toFixed(2)}</Numeric>
+              <span className="font-mono text-xs text-fg-subtle">{unit}</span>
             </div>
-            <div className="mt-3 flex items-center gap-3 text-[12px] text-fg-subtle tabular">
+            <div className="mt-3 flex items-center gap-3 text-xs text-fg-subtle tabular">
               <Delta value={change} size="md" />
               {secondaryUnit ? (
                 <>
@@ -126,7 +116,7 @@ export function InstrumentHero({
           />
         </div>
 
-        <div className="mt-8 flex items-center gap-2">
+        <div className="mt-8 flex flex-wrap items-center gap-2">
           <Button size="lg" className="gap-2">
             <Zap className="size-4" strokeWidth={2.4} fill="currentColor" />
             Launch runtime
@@ -136,7 +126,7 @@ export function InstrumentHero({
             <ArrowUpRight className="size-3.5" strokeWidth={2} />
           </Button>
         </div>
-      </div>
+      </TileCard>
     </section>
   );
 }

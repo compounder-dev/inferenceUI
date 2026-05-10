@@ -36,12 +36,12 @@ export function Metric({
       )}
       {...props}
     >
-      <span className="text-[11px] text-fg-subtle">{label}</span>
+      <span className="text-xs text-fg-subtle">{label}</span>
       <div className="flex items-baseline gap-2 numeric font-medium text-fg">
         {value}
         {typeof change === "number" ? <Delta value={change} size="sm" invert={invertChange} /> : null}
       </div>
-      {hint ? <span className="text-[11px] text-fg-subtle tabular">{hint}</span> : null}
+      {hint ? <span className="text-xs text-fg-subtle tabular">{hint}</span> : null}
     </div>
   );
 }

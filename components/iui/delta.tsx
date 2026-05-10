@@ -17,7 +17,7 @@ export interface DeltaProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const sizeClass = {
-  sm: "text-[10px] gap-0.5",
+  sm: "text-2xs gap-0.5",
   md: "text-xs gap-1",
   lg: "text-sm gap-1",
 } as const;

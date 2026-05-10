@@ -23,7 +23,7 @@ const toneClass = {
   up: "text-data-up",
   down: "text-data-down",
   muted: "text-fg-muted",
-  accent: "text-accent-amber",
+  accent: "text-accent",
 } as const;
 
 export function Numeric({
