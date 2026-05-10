@@ -177,36 +177,42 @@ export default function DiscoverPage() {
 
 function HeroPitch() {
   const features = [
-    { icon: <Activity className="size-3.5" strokeWidth={1.75} />, label: "Real-time pricing", sub: "Spot updates · 50ms" },
-    { icon: <ShieldCheck className="size-3.5" strokeWidth={1.75} />, label: "Deep liquidity",      sub: "Tight provider spreads" },
-    { icon: <Globe className="size-3.5" strokeWidth={1.75} />,    label: "Transparent",          sub: "Onchain · auditable" },
-    { icon: <Code className="size-3.5" strokeWidth={1.75} />,     label: "Powerful APIs",        sub: "REST · gRPC · SSE" },
-    { icon: <Briefcase className="size-3.5" strokeWidth={1.75} />, label: "Open weights",        sub: "Llama · Mistral · Qwen" },
-    { icon: <FlaskConical className="size-3.5" strokeWidth={1.75} />, label: "Sandboxes",        sub: "Cloud agent runtimes" },
-  ];
+    { icon: Activity,     label: "Real-time",   sub: "Live spot updates" },
+    { icon: ShieldCheck,  label: "Liquid",      sub: "Tight spreads" },
+    { icon: Globe,        label: "Transparent", sub: "Auditable on-chain" },
+    { icon: Code,         label: "Powerful",    sub: "APIs & SDKs" },
+    { icon: Briefcase,    label: "Open",        sub: "Open-weight models" },
+    { icon: FlaskConical, label: "Sandboxed",   sub: "Cloud agent runtimes" },
+  ] as const;
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-[44px] font-semibold leading-[1.05] tracking-[-0.025em] text-fg lg:text-[52px]">
-        The world's compute,<br />priced in <span className="text-accent">real time.</span>
+      <h1 className="text-balance text-[40px] font-semibold leading-[1.05] tracking-[-0.025em] text-fg lg:text-[48px]">
+        The world&apos;s compute, priced in{" "}
+        <span className="text-accent">real&nbsp;time.</span>
       </h1>
-      <p className="max-w-md text-sm text-fg-muted">
+      <p className="max-w-md text-pretty text-sm text-fg-muted">
         Trade GPUs, models, and agents on one exchange. Live prices. Real liquidity. Hosted, edge, or on your own metal.
       </p>
-      <div className="grid grid-cols-2 gap-2">
-        {features.map((f, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-2 rounded-md border border-line bg-card px-3 py-2.5"
-          >
-            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent">
-              {f.icon}
-            </span>
-            <div className="min-w-0">
-              <div className="text-xs font-medium text-fg">{f.label}</div>
-              <div className="truncate text-2xs text-fg-subtle">{f.sub}</div>
+      <div className="grid grid-cols-3 gap-2">
+        {features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div
+              key={f.label}
+              className="flex items-start gap-2 rounded-md border border-line bg-card px-3 py-2.5"
+            >
+              <Icon
+                className="mt-0.5 size-3.5 shrink-0 text-fg-subtle"
+                strokeWidth={1.75}
+                aria-hidden
+              />
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-fg">{f.label}</div>
+                <div className="text-2xs leading-tight text-fg-subtle">{f.sub}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -217,71 +223,78 @@ function HeroPitch() {
 function FeaturedMarket() {
   return (
     <TileCard flush className="flex flex-col">
+      {/* Header — caps mono label + save */}
       <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
-        <div className="flex items-center gap-2 font-mono text-2xs uppercase tracking-[0.14em] text-accent">
-          <Zap className="size-3.5" strokeWidth={2} fill="currentColor" />
+        <div className="flex items-center gap-2 font-mono text-2xs font-medium uppercase tracking-[0.14em] text-accent">
+          <Zap className="size-3.5" strokeWidth={2.4} fill="currentColor" />
           Featured market
         </div>
-        <button className="grid size-7 place-items-center rounded-md text-fg-subtle hover:bg-secondary hover:text-fg" aria-label="Save">
+        <button
+          className="grid size-7 place-items-center rounded-md text-fg-subtle hover:bg-secondary hover:text-fg"
+          aria-label="Save market"
+        >
           <Star className="size-3.5" strokeWidth={1.75} />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[1fr_280px]">
-        <div className="flex flex-col gap-4 bg-card px-5 py-4">
+      {/* Body — identity + actions left, price summary + chart right */}
+      <div className="grid grid-cols-1 gap-6 px-5 pb-4 md:grid-cols-[minmax(220px,260px)_1fr]">
+        <div className="flex flex-col gap-4">
           <div className="flex items-start gap-3">
             <HardwareThumb kind="gpu" image={IMG.h100} alt="H100 80GB SXM" size={48} radius="md" />
             <div className="min-w-0">
-              <h3 className="text-balance text-lg font-semibold tracking-tight text-fg">
-                H100 80GB SXM is the most-routed GPU this week
+              <h3 className="text-balance text-base font-semibold leading-tight tracking-tight text-fg">
+                Will H100 capacity hit 0 free in JNB this week?
               </h3>
-              <div className="mt-1 flex items-center gap-2 text-xs text-fg-muted">
-                <span className="rounded-sm bg-accent-soft px-1.5 py-0.5 text-accent">GPU</span>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-2xs text-fg-muted">
+                <span className="rounded-sm bg-accent-soft px-1.5 py-0.5 font-medium text-accent">GPU</span>
                 <span>Vultr · ZA-JNB</span>
-                <span className="text-fg-subtle/40">·</span>
-                <span>updated 12s ago</span>
               </div>
             </div>
           </div>
 
-          <ChartBlock data={FEATURED_SERIES} />
-
-          <div className="flex flex-wrap gap-x-6 gap-y-1 border-t border-line-subtle pt-3 text-xs text-fg-muted">
-            <Stat label="Liquidity"   value="$11.2M" />
-            <Stat label="24h volume"  value="$1.84M" />
-            <Stat label="Providers"   value="62" />
-            <Stat label="Capacity"    value="2 / 8 free" />
+          <div className="flex items-center gap-2">
+            <Button className="h-10 flex-1 gap-1.5 text-sm font-medium">
+              <Zap className="size-4" strokeWidth={2.4} fill="currentColor" />
+              Launch
+            </Button>
+            <Button variant="outline" className="h-10 flex-1 text-sm font-medium">
+              Rent
+            </Button>
           </div>
         </div>
 
-        <aside className="flex flex-col gap-3 bg-card px-5 py-4">
-          <div>
-            <div className="text-2xs font-medium uppercase tracking-[0.12em] text-fg-subtle">Spot price</div>
-            <div className="mt-1 flex items-baseline gap-2">
-              <Numeric weight="display" size="2rem">$3.42</Numeric>
-              <span className="text-xs text-fg-muted">/ hr</span>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <div className="text-2xs font-medium uppercase tracking-[0.12em] text-fg-subtle">Spot price</div>
+              <div className="mt-1 flex items-baseline gap-2">
+                <Numeric weight="display" size="1.875rem">$3.42</Numeric>
+                <Delta value={0.021} size="sm" />
+                <span className="text-2xs text-fg-subtle">24h</span>
+              </div>
             </div>
-            <div className="mt-1 flex items-center gap-2">
-              <Delta value={0.021} size="sm" />
-              <span className="text-xs text-fg-subtle">24h</span>
+            <div className="text-right">
+              <div className="text-2xs font-medium uppercase tracking-[0.12em] text-fg-subtle">7-day high</div>
+              <div className="mt-1 text-sm font-medium tabular text-fg">$3.58 / hr</div>
             </div>
           </div>
+          <ChartBlock data={FEATURED_SERIES} />
+        </div>
+      </div>
 
-          <Button className="h-10 w-full gap-2 text-sm font-medium">
-            <Zap className="size-4" strokeWidth={2.4} fill="currentColor" />
-            Launch runtime
-          </Button>
-          <Button variant="outline" className="h-10 w-full text-sm font-medium">
-            Rent now
-          </Button>
-
-          <Separator className="my-1" />
-
-          <a className="flex items-center justify-between text-sm text-fg-muted hover:text-fg" href="#">
-            View market
-            <span aria-hidden>→</span>
-          </a>
-        </aside>
+      {/* Footer — stats row + view market */}
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-line-subtle bg-secondary/40 px-5 py-3">
+        <Stat label="Liquidity"  value="$11.2M" />
+        <Stat label="24h volume" value="$1.84M" />
+        <Stat label="Providers"  value="62" />
+        <Stat label="Free capacity" value="2 / 8" />
+        <a
+          className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+          href="#"
+        >
+          View market <span aria-hidden>→</span>
+        </a>
       </div>
     </TileCard>
   );
@@ -335,8 +348,8 @@ function ChartBlock({ data }: { data: readonly number[] }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">
-      <span className="text-2xs uppercase tracking-[0.1em] text-fg-subtle">{label}</span>
-      <span className="text-sm font-medium text-fg tabular">{value}</span>
+      <span className="text-2xs font-medium uppercase tracking-[0.1em] text-fg-subtle">{label}</span>
+      <span className="text-sm font-semibold text-fg tabular">{value}</span>
     </div>
   );
 }
