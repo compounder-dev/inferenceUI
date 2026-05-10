@@ -132,10 +132,10 @@ export function DiscoveryRow({
         ))}
       </div>
 
-      {/* Sparkline */}
+      {/* Sparkline — locked to brand accent so a list of rows reads as one chrome */}
       <div className="hidden lg:block">
         {series && series.length > 1 ? (
-          <Sparkline data={series} width={120} height={28} tone="auto" emphasizeLast strokeWidth={1.1} />
+          <Sparkline data={series} width={120} height={28} tone="accent" emphasizeLast strokeWidth={1.1} />
         ) : null}
       </div>
 

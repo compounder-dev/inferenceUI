@@ -35,7 +35,7 @@ const STORAGE_ACCENT = "iui:accent";
  */
 export function ThemeProvider({
   defaultMode = "dark",
-  defaultAccent = "amber",
+  defaultAccent = "ember",
   children,
 }: {
   defaultMode?: Mode;
@@ -83,7 +83,7 @@ export function useTheme() {
  */
 export const themeBootstrapScript = `(function(){try{
 var m=localStorage.getItem('${STORAGE_MODE}')||'dark';
-var a=localStorage.getItem('${STORAGE_ACCENT}')||'amber';
+var a=localStorage.getItem('${STORAGE_ACCENT}')||'ember';
 var d=document.documentElement;
 d.dataset.mode=m;d.dataset.accent=a;
 }catch(e){}})();`;

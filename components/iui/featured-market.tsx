@@ -62,12 +62,6 @@ export interface FeaturedMarketProps extends Omit<React.HTMLAttributes<HTMLDivEl
   saved?: boolean;
 }
 
-const toneStroke = {
-  up: "var(--data-up)",
-  down: "var(--data-down)",
-  neutral: "var(--fg-subtle)",
-} as const;
-
 export function FeaturedMarket({
   title,
   primaryValue,
@@ -86,12 +80,13 @@ export function FeaturedMarket({
   className,
   ...rest
 }: FeaturedMarketProps) {
-  const trend: "up" | "down" | "neutral" =
-    data.length < 2 ? "neutral" : data[data.length - 1]! > data[0]! ? "up" : data[data.length - 1]! < data[0]! ? "down" : "neutral";
+  // Chart always renders in the brand accent — never auto-tones red/green.
+  // Direction is conveyed by the <Delta> chip alone.
+  const stroke = "var(--accent)";
 
   return (
     <TileCard density="comfortable" className={cn("flex flex-col gap-0 p-0", className)} {...rest}>
-      <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[minmax(280px,360px)_1fr]">
+      <div className="grid grid-cols-1 gap-px bg-line-subtle md:grid-cols-[minmax(280px,360px)_1fr]" data-trend="brand">
         {/* LEFT — identity + actions + context */}
         <div className="flex min-w-0 flex-col gap-5 bg-background p-5 md:p-6">
           <div className="flex items-start justify-between gap-3">
@@ -125,7 +120,7 @@ export function FeaturedMarket({
 
           <div>
             <div className="flex items-baseline gap-3">
-              <Numeric weight="display" tone={trend === "up" ? "up" : trend === "down" ? "down" : "default"} size="2.5rem">
+              <Numeric weight="display" tone="default" size="2.5rem">
                 {primaryValue}
               </Numeric>
               {typeof change === "number" ? <Delta value={change} size="md" /> : null}
@@ -136,17 +131,12 @@ export function FeaturedMarket({
           </div>
 
           {(primaryAction || secondaryAction) ? (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-2">
               {primaryAction ? (
                 <Button
                   size="lg"
-                  variant="outline"
                   onClick={primaryAction.onClick}
-                  className={cn(
-                    "h-12 border-data-up/40 bg-data-up/10 text-data-up text-base font-medium",
-                    "hover:bg-data-up/20 hover:text-data-up",
-                    primaryAction.tone === "accent" && "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20 hover:text-accent",
-                  )}
+                  className="h-11 flex-1 gap-2 text-base font-medium"
                 >
                   {primaryAction.label}
                 </Button>
@@ -156,11 +146,7 @@ export function FeaturedMarket({
                   size="lg"
                   variant="outline"
                   onClick={secondaryAction.onClick}
-                  className={cn(
-                    "h-12 border-data-down/40 bg-data-down/10 text-data-down text-base font-medium",
-                    "hover:bg-data-down/20 hover:text-data-down",
-                    secondaryAction.tone === "neutral" && "border-line bg-card text-fg-muted hover:bg-card/80 hover:text-fg",
-                  )}
+                  className="h-11 flex-1 border-line bg-transparent text-base font-medium text-fg-muted hover:text-fg"
                 >
                   {secondaryAction.label}
                 </Button>
@@ -187,7 +173,7 @@ export function FeaturedMarket({
 
         {/* RIGHT — chart with event markers */}
         <div className="relative flex flex-col bg-background">
-          <ChartArea data={data} events={events} stroke={toneStroke[trend]} />
+          <ChartArea data={data} events={events} stroke={stroke} />
           {footer ? (
             <div className="flex items-center justify-between border-t border-line-subtle px-5 py-3 text-xs text-fg-subtle">
               {footer}
