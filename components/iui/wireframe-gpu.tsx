@@ -13,7 +13,7 @@ export interface WireframeGpuProps extends React.SVGAttributes<SVGSVGElement> {
 }
 
 export function WireframeGpu({
-  tone = "var(--accent-amber)",
+  tone = "var(--accent)",
   className,
   ...rest
 }: WireframeGpuProps) {

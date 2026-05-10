@@ -5,10 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Theme tokens — declared in oklch for precision, mapped to Tailwind
- * utilities below. The surface stack walks from true black up; the accent
- * is a single amber tone; data-up/down/info/warn carry semantic meaning
- * and are never decorative.
+ * Theme axes
+ *
+ *   data-mode   : "dark" | "light"        — base canvas + foreground stack
+ *   data-accent : "amber" | "ember"       — single saturated accent token
+ *
+ * Every other token (data-up / data-down / borders / muted) is shared.
+ * Components only ever read `--accent`, never a specific accent name.
  */
 
 @theme inline {
@@ -35,145 +38,186 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Surfaces — order matters: 0 = canvas, 4 = highest elevation */
   --color-surface-0: var(--surface-0);
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-surface-4: var(--surface-4);
 
-  /* Foreground tiers */
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-fg-subtle: var(--fg-subtle);
   --color-fg-disabled: var(--fg-disabled);
 
-  /* Semantic data tones */
   --color-data-up: var(--data-up);
   --color-data-down: var(--data-down);
   --color-data-info: var(--data-info);
   --color-data-warn: var(--data-warn);
 
-  /* Borders */
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-line-subtle: var(--line-subtle);
 
-  /* Accent shorthand */
-  --color-accent-amber: var(--accent-amber);
-  --color-accent-amber-soft: var(--accent-amber-soft);
+  --color-accent-soft: var(--accent-soft);
 
-  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Typography families */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-display);
 
-  /* Type scale — denser than default */
-  --text-2xs: 0.625rem;     /* 10 */
-  --text-xs: 0.6875rem;     /* 11 */
-  --text-sm: 0.75rem;       /* 12 */
-  --text-base: 0.8125rem;   /* 13 */
-  --text-md: 0.875rem;      /* 14 */
-  --text-lg: 1rem;          /* 16 */
-  --text-xl: 1.125rem;      /* 18 */
-  --text-2xl: 1.375rem;     /* 22 */
-  --text-3xl: 1.75rem;      /* 28 */
-  --text-4xl: 2.25rem;      /* 36 */
-  --text-5xl: 3rem;          /* 48 */
-  --text-6xl: 4.5rem;       /* 72 */
-  --text-display: 6rem;     /* 96 — hero */
+  --text-2xs: 0.625rem;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.125rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 4.5rem;
 
-  /* Tracking */
   --tracking-display: -0.04em;
-  --tracking-tighter: -0.025em;
   --tracking-tight: -0.012em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.012em;
-  --tracking-caps: 0.14em;     /* mono caps labels */
+  --tracking-caps: 0.12em;
 
-  /* Radii — small, technical */
   --radius: 0.375rem;
   --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 1);
+  --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) * 1.5);
   --radius-xl: calc(var(--radius) * 2);
 
-  /* Motion */
   --duration-instant: 80ms;
   --duration-swift: 140ms;
   --duration-smooth: 220ms;
   --duration-elevate: 320ms;
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-:root {
-  /* Surfaces */
-  --surface-0: oklch(0 0 0);              /* #000000 — canvas */
-  --surface-1: oklch(0.135 0 0);          /* deep panel */
-  --surface-2: oklch(0.18 0 0);           /* card */
-  --surface-3: oklch(0.225 0 0);          /* raised */
-  --surface-4: oklch(0.27 0 0);           /* hover / pressed */
+/* ─────────── DARK MODE — default ─────────── */
 
-  /* Foreground tiers (warm-grey on black for legibility) */
+:root,
+[data-mode="dark"] {
+  --surface-0: oklch(0 0 0);
+  --surface-1: oklch(0.135 0 0);
+  --surface-2: oklch(0.18 0 0);
+  --surface-3: oklch(0.225 0 0);
+  --surface-4: oklch(0.27 0 0);
+
   --fg:          oklch(0.985 0.002 95);
   --fg-muted:    oklch(0.78 0.005 95);
   --fg-subtle:   oklch(0.55 0.005 95);
   --fg-disabled: oklch(0.4 0.005 95);
 
-  /* Borders */
   --line-subtle: oklch(1 0 0 / 6%);
   --line:        oklch(1 0 0 / 11%);
   --line-strong: oklch(1 0 0 / 18%);
 
-  /* Accent — amber 400 */
-  --accent-amber:        oklch(0.85 0.17 87);
-  --accent-amber-soft:   oklch(0.85 0.17 87 / 14%);
-  --accent-amber-glow:   oklch(0.85 0.17 87 / 32%);
+  --data-up:   oklch(0.78 0.18 142);
+  --data-down: oklch(0.66 0.22 22);
+  --data-info: oklch(0.75 0.14 235);
+  --data-warn: oklch(0.82 0.16 70);
 
-  /* Data tones */
-  --data-up:   oklch(0.78 0.18 142);   /* green */
-  --data-down: oklch(0.66 0.22 22);    /* red */
-  --data-info: oklch(0.75 0.14 235);   /* blue */
-  --data-warn: oklch(0.82 0.16 70);    /* amber-warn */
-
-  /* shadcn aliases — every primitive maps to our tokens */
   --background: var(--surface-0);
   --foreground: var(--fg);
   --card: var(--surface-1);
   --card-foreground: var(--fg);
   --popover: var(--surface-2);
   --popover-foreground: var(--fg);
-  --primary: var(--accent-amber);
-  --primary-foreground: oklch(0.12 0 0);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--fg);
   --muted: var(--surface-1);
   --muted-foreground: var(--fg-muted);
-  --accent: var(--surface-2);
-  --accent-foreground: var(--fg);
   --destructive: var(--data-down);
   --destructive-foreground: var(--fg);
   --border: var(--line);
   --input: var(--line-strong);
-  --ring: var(--accent-amber);
 
-  /* Charts — accent-led series */
-  --chart-1: var(--accent-amber);
+  color-scheme: dark;
+}
+
+/* ─────────── LIGHT MODE ─────────── */
+
+[data-mode="light"] {
+  --surface-0: oklch(0.985 0.003 90);     /* off-white */
+  --surface-1: oklch(0.96 0.004 90);
+  --surface-2: oklch(0.93 0.005 90);
+  --surface-3: oklch(0.9 0.006 90);
+  --surface-4: oklch(0.86 0.006 90);
+
+  --fg:          oklch(0.16 0.01 90);
+  --fg-muted:    oklch(0.45 0.008 90);
+  --fg-subtle:   oklch(0.62 0.006 90);
+  --fg-disabled: oklch(0.78 0.005 90);
+
+  --line-subtle: oklch(0 0 0 / 5%);
+  --line:        oklch(0 0 0 / 9%);
+  --line-strong: oklch(0 0 0 / 16%);
+
+  --data-up:   oklch(0.55 0.16 142);
+  --data-down: oklch(0.55 0.22 22);
+  --data-info: oklch(0.55 0.16 235);
+  --data-warn: oklch(0.7 0.16 70);
+
+  --background: var(--surface-0);
+  --foreground: var(--fg);
+  --card: var(--surface-0);
+  --card-foreground: var(--fg);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--fg);
+  --secondary: var(--surface-1);
+  --secondary-foreground: var(--fg);
+  --muted: var(--surface-1);
+  --muted-foreground: var(--fg-muted);
+  --destructive: var(--data-down);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: var(--line);
+  --input: var(--line-strong);
+
+  color-scheme: light;
+}
+
+/* ─────────── ACCENT — Amber (high-visibility yellow) ─────────── */
+
+:root,
+[data-accent="amber"] {
+  --accent:           oklch(0.85 0.17 87);
+  --accent-soft:      oklch(0.85 0.17 87 / 14%);
+  --accent-foreground: oklch(0.16 0.01 90);
+
+  --primary:           var(--accent);
+  --primary-foreground: var(--accent-foreground);
+  --ring:              var(--accent);
+
+  --chart-1: var(--accent);
   --chart-2: var(--data-up);
   --chart-3: var(--data-down);
   --chart-4: var(--data-info);
   --chart-5: var(--fg-muted);
+}
 
-  color-scheme: dark;
+/* ─────────── ACCENT — Ember (deep red-orange) ─────────── */
+
+[data-accent="ember"] {
+  --accent:           oklch(0.65 0.22 30);
+  --accent-soft:      oklch(0.65 0.22 30 / 16%);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --primary:           var(--accent);
+  --primary-foreground: var(--accent-foreground);
+  --ring:              var(--accent);
+
+  --chart-1: var(--accent);
+  --chart-2: var(--data-up);
+  --chart-3: var(--data-down);
+  --chart-4: var(--data-info);
+  --chart-5: var(--fg-muted);
 }
 
 @layer base {
@@ -182,8 +226,8 @@
     outline-color: oklch(from var(--ring) l c h / 50%);
   }
   html, body {
-    background: var(--surface-0);
-    color: var(--fg);
+    background: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
     font-size: 14px;
     line-height: 1.5;
@@ -193,28 +237,24 @@
     font-feature-settings: "ss01", "cv11";
   }
   ::selection {
-    background: var(--accent-amber-glow);
+    background: var(--accent-soft);
     color: var(--fg);
   }
 }
 
-/* ─── Utility: tabular numerics ─── */
+/* ─────────── Utilities ─────────── */
+
 .tabular {
   font-variant-numeric: tabular-nums slashed-zero;
   font-feature-settings: "tnum", "zero";
 }
 
-/* ─── Utility: mono caps label ─── */
-.label {
+.numeric {
   font-family: var(--font-mono);
-  font-size: 0.6875rem; /* 11 */
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-  font-weight: 500;
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.01em;
 }
 
-/* ─── Utility: display — heavy industrial broadcast ─── */
 .display {
   font-family: var(--font-display);
   font-weight: 900;
@@ -222,69 +262,22 @@
   line-height: 0.92;
 }
 
-/* ─── Utility: technical numeric — for prices ─── */
-.numeric {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
-  letter-spacing: -0.01em;
-}
-
-/* ─── Utility: gridline overlay ─── */
-.gridlines {
-  background-image:
-    linear-gradient(to right, oklch(1 0 0 / 4%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 4%) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
 .gridlines-fine {
   background-image:
-    linear-gradient(to right, oklch(1 0 0 / 3%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 3%) 1px, transparent 1px);
+    linear-gradient(to right, oklch(from var(--fg) l c h / 3%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(from var(--fg) l c h / 3%) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
-/* ─── Utility: hairline divider ─── */
-.hairline {
-  background-color: var(--line-subtle);
-}
-
-/* ─── Live pulse — for data-streaming affordances ─── */
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.55; transform: scale(0.85); }
 }
 
 .dot-live {
-  position: relative;
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 9999px;
-  background: var(--data-up);
   animation: pulse-soft 1.6s var(--ease-out-quint) infinite;
 }
 
-.dot-live::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 9999px;
-  background: var(--data-up);
-  opacity: 0.22;
-}
-
-/* ─── Coordinate strip — top-of-page mission-critical chrome ─── */
-.coord-strip {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

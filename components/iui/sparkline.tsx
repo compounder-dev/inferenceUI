@@ -14,7 +14,7 @@ const stroke: Record<Exclude<Tone, "auto">, string> = {
   up: "var(--data-up)",
   down: "var(--data-down)",
   neutral: "var(--fg-subtle)",
-  accent: "var(--accent-amber)",
+  accent: "var(--accent)",
 };
 
 export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>, "fill"> {
@@ -101,7 +101,7 @@ export function Sparkline({
         <path
           d={lastPath}
           fill="none"
-          stroke="var(--accent-amber)"
+          stroke="var(--accent)"
           strokeWidth={strokeWidth + 0.5}
           strokeLinecap="round"
           strokeLinejoin="round"

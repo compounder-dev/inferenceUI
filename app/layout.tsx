@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Big_Shoulders } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider, themeBootstrapScript } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,21 +24,24 @@ const display = Big_Shoulders({
 
 export const metadata: Metadata = {
   title: "InferenceUI — components for inference platforms",
-  description: "An open-source component library for compute markets, runtime control planes, and inference operating systems.",
+  description:
+    "An open-source component library for compute markets, runtime control planes, and inference operating systems.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

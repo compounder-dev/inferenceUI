@@ -3,24 +3,24 @@ import { cn } from "@/lib/utils";
 /**
  * <StatusPill>
  *
- * A compact status indicator. Two parts: a colour-coded dot and a label.
- * No heavy fill, no rounded oval — a hairline outline around a tabular
- * mono label keeps the chrome quiet so the dot does the talking.
+ * A compact status indicator. A coloured dot plus a label. The chrome is
+ * intentionally minimal — a hairline outline around a tabular label keeps
+ * the dot doing the talking.
  */
 type Tone = "up" | "warn" | "down" | "info" | "neutral";
 
-const toneStyle: Record<Tone, { dot: string; ring: string }> = {
-  up:      { dot: "bg-data-up",   ring: "ring-data-up/30" },
-  warn:    { dot: "bg-data-warn", ring: "ring-data-warn/30" },
-  down:    { dot: "bg-data-down", ring: "ring-data-down/30" },
-  info:    { dot: "bg-data-info", ring: "ring-data-info/30" },
-  neutral: { dot: "bg-fg-subtle", ring: "ring-line" },
+const toneStyle: Record<Tone, string> = {
+  up:      "bg-data-up",
+  warn:    "bg-data-warn",
+  down:    "bg-data-down",
+  info:    "bg-data-info",
+  neutral: "bg-fg-subtle",
 };
 
 export interface StatusPillProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: Tone;
   pulse?: boolean;
-  /** Renders the dot with no surrounding label chrome. */
+  /** Renders a dot-only marker with no surrounding chrome. */
   bare?: boolean;
 }
 
@@ -32,14 +32,13 @@ export function StatusPill({
   children,
   ...props
 }: StatusPillProps) {
-  const ts = toneStyle[tone];
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em]",
+        "inline-flex items-center gap-1.5",
         bare
-          ? "text-fg-muted"
-          : "h-5 rounded-sm border border-line-subtle bg-surface-1/40 px-2 text-fg-muted",
+          ? "text-[12px] text-fg-muted"
+          : "h-6 rounded-sm border border-line bg-card/40 px-2 text-[11px] text-fg-muted",
         className,
       )}
       {...props}
@@ -47,11 +46,11 @@ export function StatusPill({
       <span
         className={cn(
           "relative inline-block h-1.5 w-1.5 rounded-full",
-          ts.dot,
+          toneStyle[tone],
           pulse && "dot-live",
         )}
       />
-      <span className="tabular">{children}</span>
+      <span>{children}</span>
     </span>
   );
 }

@@ -1,8 +1,8 @@
 import { CoordStrip } from "@/components/iui/coord-strip";
-import { DataLabel } from "@/components/iui/data-label";
 import { InstrumentHero } from "@/components/iui/instrument-hero";
 import { Metric } from "@/components/iui/metric";
 import { Sparkline } from "@/components/iui/sparkline";
+import { ThemeSwitch } from "@/components/iui/theme-switch";
 
 const series = [
   3.14, 3.18, 3.21, 3.19, 3.22, 3.27, 3.30, 3.34, 3.31, 3.28,
@@ -19,37 +19,36 @@ export default function Home() {
       <CoordStrip
         system="INFERENCE.EX"
         region="ZA-JNB"
-        state="ALL SYSTEMS OPERATIONAL"
+        state="All systems operational"
         tone="up"
         fixedTime="14:32:18 UTC"
       />
 
       <div className="mx-auto w-full max-w-[1400px] flex-1 px-6 py-10 lg:px-10 lg:py-14">
-        <nav className="mb-8 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-subtle">
-          <span className="text-fg-muted">MARKETS</span>
-          <span className="text-fg-subtle/40">/</span>
-          <span className="text-fg-muted">GPUS</span>
-          <span className="text-fg-subtle/40">/</span>
-          <span className="text-fg">H100 80GB SXM</span>
-        </nav>
+        <div className="flex items-center justify-between">
+          <Breadcrumb path={["Markets", "GPUs", "H100 80GB SXM"]} />
+          <ThemeSwitch />
+        </div>
 
-        <InstrumentHero
-          name="H100 80GB SXM"
-          kind="GPU · Hopper"
-          hostedBy="Vultr"
-          region="Johannesburg, ZA"
-          status="available"
-          price={3.42}
-          unit="/ hr"
-          secondaryUnit="$0.0095 / min"
-          change={0.021}
-          series={series}
-        />
+        <div className="mt-8">
+          <InstrumentHero
+            name="H100 80GB SXM"
+            kind="GPU · Hopper"
+            hostedBy="Vultr"
+            region="Johannesburg, ZA"
+            status="available"
+            price={3.42}
+            unit="/ hr"
+            secondaryUnit="$0.0095 / min"
+            change={0.021}
+            series={series}
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-px border-x border-b border-line-subtle bg-line-subtle md:grid-cols-4">
-          <StatTile label="Low · 24h"  value="$3.21" />
-          <StatTile label="High · 24h" value="$3.58" />
-          <StatTile label="Avg · 24h"  value="$3.38" />
+          <StatTile label="Low · 24h"    value="$3.21" />
+          <StatTile label="High · 24h"   value="$3.58" />
+          <StatTile label="Avg · 24h"    value="$3.38" />
           <StatTile label="Volume · 24h" value="1,248" unit="GPU-hr" />
         </div>
 
@@ -78,33 +77,33 @@ export default function Home() {
           />
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-3">
           <article>
-            <DataLabel index={2}>Instrument card</DataLabel>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-fg-muted">
-              NVIDIA H100 80GB SXM5 with NVLink. Optimised for large-language-model inference
-              and high-throughput training workloads. Fourth-generation tensor cores, FP8 support,
-              900 GB/s NVLink interconnect.
+            <h2 className="text-lg font-medium tracking-tight text-fg">Instrument</h2>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-fg-muted">
+              NVIDIA H100 80GB SXM5 with NVLink. Optimised for large-language-model
+              inference and high-throughput training workloads. Fourth-generation
+              tensor cores, FP8 support, 900 GB/s NVLink interconnect.
             </p>
-            <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 font-mono text-[11px] tabular">
-              <Spec k="ARCHITECTURE"     v="Hopper" />
-              <Spec k="MEMORY"           v="80 GB HBM3e" />
-              <Spec k="INTERCONNECT"     v="NVLink 4 · 900 GB/s" />
-              <Spec k="MAX POWER"        v="700 W" />
-              <Spec k="CUDA CORES"       v="16,896" />
-              <Spec k="TENSOR CORES"     v="528" />
-              <Spec k="MEMORY BANDWIDTH" v="3.35 TB/s" />
-              <Spec k="PROCESS NODE"     v="TSMC 4N" />
+            <dl className="mt-6 grid grid-cols-[max-content_1fr] gap-x-8 gap-y-2.5 text-sm">
+              <Spec k="Architecture"     v="Hopper" />
+              <Spec k="Memory"           v="80 GB HBM3e" />
+              <Spec k="Interconnect"     v="NVLink 4 · 900 GB/s" />
+              <Spec k="Max power"        v="700 W" />
+              <Spec k="CUDA cores"       v="16,896" />
+              <Spec k="Tensor cores"     v="528" />
+              <Spec k="Memory bandwidth" v="3.35 TB/s" />
+              <Spec k="Process node"     v="TSMC 4N" />
             </dl>
           </article>
 
           <article className="lg:col-span-2">
-            <DataLabel index={3}>Order / reservation history</DataLabel>
+            <h2 className="text-lg font-medium tracking-tight text-fg">Order history</h2>
             <div className="mt-4 overflow-hidden border border-line-subtle">
               <table className="w-full text-[12px]">
-                <thead className="bg-surface-1/50">
-                  <tr className="font-mono text-[10px] uppercase tracking-[0.14em] text-fg-subtle">
-                    <Th>ID</Th>
+                <thead>
+                  <tr className="border-b border-line-subtle bg-card/40 text-fg-subtle">
+                    <Th>Order</Th>
                     <Th>Type</Th>
                     <Th>Region</Th>
                     <Th align="right">Duration</Th>
@@ -114,12 +113,12 @@ export default function Home() {
                     <Th align="right">Created</Th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-line-subtle">
-                  <Row id="ord_8f3a2c" type="Launch" region="ZA-JNB" duration="1h"  qty="1" price="$3.42"  status="completed" created="2m ago" />
-                  <Row id="ord_7b9e1d" type="Launch" region="ZA-JNB" duration="2h"  qty="2" price="$6.80"  status="completed" created="1h ago" />
-                  <Row id="ord_5c2d9a" type="Rent"   region="ZA-JNB" duration="24h" qty="1" price="$72.00" status="active"    created="3h ago" />
-                  <Row id="ord_1a8d7f" type="Launch" region="ZA-CPT" duration="1h"  qty="1" price="$3.58"  status="completed" created="1d ago" />
-                  <Row id="ord_0f6b3e" type="Launch" region="ZA-JNB" duration="30m" qty="1" price="$1.71"  status="completed" created="1d ago" />
+                <tbody>
+                  <Row id="ord_8f3a2c" type="Launch" region="ZA-JNB" duration="1h"  qty="1" price="$3.42"  status="Completed" created="2m ago" />
+                  <Row id="ord_7b9e1d" type="Launch" region="ZA-JNB" duration="2h"  qty="2" price="$6.80"  status="Completed" created="1h ago" />
+                  <Row id="ord_5c2d9a" type="Rent"   region="ZA-JNB" duration="24h" qty="1" price="$72.00" status="Active"    created="3h ago" />
+                  <Row id="ord_1a8d7f" type="Launch" region="ZA-CPT" duration="1h"  qty="1" price="$3.58"  status="Completed" created="1d ago" />
+                  <Row id="ord_0f6b3e" type="Launch" region="ZA-JNB" duration="30m" qty="1" price="$1.71"  status="Completed" created="1d ago" />
                 </tbody>
               </table>
             </div>
@@ -130,13 +129,26 @@ export default function Home() {
   );
 }
 
+function Breadcrumb({ path }: { path: string[] }) {
+  return (
+    <nav className="flex items-center gap-2 text-[12px] text-fg-subtle">
+      {path.map((p, i) => (
+        <span key={i} className="flex items-center gap-2">
+          <span className={i === path.length - 1 ? "text-fg" : "hover:text-fg cursor-default"}>{p}</span>
+          {i < path.length - 1 ? <span className="text-fg-subtle/40">/</span> : null}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
 function StatTile({ label, value, unit }: { label: string; value: string; unit?: string }) {
   return (
-    <div className="bg-surface-0 px-5 py-4">
-      <DataLabel>{label}</DataLabel>
+    <div className="bg-background px-5 py-4">
+      <div className="text-[11px] text-fg-subtle">{label}</div>
       <div className="mt-2 flex items-baseline gap-1.5 numeric font-medium tabular">
         <span className="text-lg text-fg">{value}</span>
-        {unit ? <span className="text-[11px] uppercase tracking-[0.14em] text-fg-subtle">{unit}</span> : null}
+        {unit ? <span className="text-[11px] text-fg-subtle">{unit}</span> : null}
       </div>
     </div>
   );
@@ -149,13 +161,13 @@ function PanelTile({
   spark?: number[]; sparkTone?: "auto" | "up" | "down" | "accent";
 }) {
   return (
-    <div className="bg-surface-0 px-6 py-5">
+    <div className="bg-background px-6 py-5">
       <Metric
         label={label}
         value={
           <span className="flex items-baseline gap-1.5">
             <span className="text-2xl font-medium tabular">{value}</span>
-            {unit ? <span className="text-[10px] uppercase tracking-[0.14em] text-fg-subtle">{unit}</span> : null}
+            {unit ? <span className="text-[11px] text-fg-subtle">{unit}</span> : null}
           </span>
         }
         change={change}
@@ -179,15 +191,15 @@ function PanelTile({
 function Spec({ k, v }: { k: string; v: string }) {
   return (
     <>
-      <dt className="text-fg-subtle uppercase tracking-[0.14em]">{k}</dt>
-      <dd className="text-right text-fg">{v}</dd>
+      <dt className="text-fg-subtle">{k}</dt>
+      <dd className="text-right text-fg numeric tabular text-[13px]">{v}</dd>
     </>
   );
 }
 
 function Th({ children, align = "left" }: { children: React.ReactNode; align?: "left" | "right" }) {
   return (
-    <th className={`px-3 py-2 font-medium ${align === "right" ? "text-right" : "text-left"}`}>
+    <th className={`px-3 py-2.5 text-[11px] font-normal ${align === "right" ? "text-right" : "text-left"}`}>
       {children}
     </th>
   );
@@ -199,24 +211,38 @@ function Row({
   id: string; type: string; region: string; duration: string; qty: string; price: string; status: string; created: string;
 }) {
   const tone =
-    status === "completed" ? "text-data-up"
-    : status === "active" ? "text-accent-amber"
-    : status === "failed" ? "text-data-down"
+    status === "Completed" ? "text-data-up"
+    : status === "Active" ? "text-accent"
+    : status === "Failed" ? "text-data-down"
     : "text-fg-muted";
   return (
-    <tr className="font-mono tabular text-[11px] hover:bg-surface-1/30">
-      <Td><span className="text-fg">{id}</span></Td>
+    <tr className="border-b border-line-subtle text-[12px] last:border-b-0 hover:bg-card/30">
+      <Td><span className="font-mono text-fg">{id}</span></Td>
       <Td>{type}</Td>
-      <Td>{region}</Td>
-      <Td align="right">{duration}</Td>
-      <Td align="right">{qty}</Td>
-      <Td align="right">{price}</Td>
-      <Td><span className={tone + " uppercase tracking-[0.14em]"}>{status}</span></Td>
+      <Td><span className="font-mono">{region}</span></Td>
+      <Td align="right" tabular>{duration}</Td>
+      <Td align="right" tabular>{qty}</Td>
+      <Td align="right" tabular>{price}</Td>
+      <Td><span className={tone}>{status}</span></Td>
       <Td align="right">{created}</Td>
     </tr>
   );
 }
 
-function Td({ children, align = "left" }: { children: React.ReactNode; align?: "left" | "right" }) {
-  return <td className={`px-3 py-2 ${align === "right" ? "text-right" : "text-left"} text-fg-muted`}>{children}</td>;
+function Td({
+  children,
+  align = "left",
+  tabular = false,
+}: {
+  children: React.ReactNode;
+  align?: "left" | "right";
+  tabular?: boolean;
+}) {
+  return (
+    <td
+      className={`px-3 py-2.5 text-fg-muted ${align === "right" ? "text-right" : "text-left"} ${tabular ? "tabular numeric" : ""}`}
+    >
+      {children}
+    </td>
+  );
 }
