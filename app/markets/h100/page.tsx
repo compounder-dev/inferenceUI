@@ -2,13 +2,14 @@
 
 import * as React from "react";
 import {
-  ChevronRight, Cpu, Bell, Share2, Star,
+  ChevronRight, Bell, Share2, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { TopNav } from "@/components/iui/top-nav";
 import { TileCard } from "@/components/iui/tile-card";
+import { HardwareThumb } from "@/components/iui/hardware-thumb";
 import { Numeric } from "@/components/iui/numeric";
 import { Delta } from "@/components/iui/delta";
 import { Sparkline } from "@/components/iui/sparkline";
@@ -98,9 +99,13 @@ export default function H100DetailPage() {
           {/* Title row — matches the Polymarket detail mockup */}
           <header className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto_auto]">
             <div className="flex items-start gap-4">
-              <span className="grid size-14 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent">
-                <Cpu className="size-7" strokeWidth={1.75} />
-              </span>
+              <HardwareThumb
+                kind="gpu"
+                image="https://images.unsplash.com/photo-1591488320449-011701bb6704?w=240&h=240&fit=crop&q=80"
+                alt="H100 80GB SXM"
+                size={56}
+                radius="lg"
+              />
               <div className="min-w-0">
                 <h1 className="text-3xl font-semibold tracking-[-0.02em] text-fg lg:text-[2.25rem] lg:leading-[1.15]">
                   H100 80GB SXM
@@ -139,7 +144,7 @@ export default function H100DetailPage() {
                   <span>24h</span>
                 </div>
               </div>
-              <Sparkline data={heroSpark} width={140} height={48} tone="up" emphasizeLast strokeWidth={1.5} />
+              <Sparkline data={heroSpark} width={140} height={48} tone="accent" emphasizeLast strokeWidth={1.5} />
             </TileCard>
           </header>
 
