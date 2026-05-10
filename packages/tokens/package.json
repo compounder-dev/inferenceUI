@@ -1,0 +1,20 @@
+{
+  "name": "@inferenceui/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for InferenceUI — the open-source UI language for compute markets.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/tokens.css",
+  "exports": {
+    ".": "./dist/tokens.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "mkdir -p dist && cp src/tokens.css dist/tokens.css",
+    "clean": "rm -rf dist"
+  }
+}
