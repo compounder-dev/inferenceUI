@@ -95,9 +95,9 @@ export function PriceChart({
     return Array.from({ length: yTicks }, (_, i) => min + (range * i) / (yTicks - 1));
   }, [data.length, min, range, yTicks]);
 
-  const trend: "up" | "down" | "flat" =
-    data.length < 2 ? "flat" : data[data.length - 1]! > data[0]! ? "up" : data[data.length - 1]! < data[0]! ? "down" : "flat";
-  const stroke = trend === "up" ? "var(--data-up)" : trend === "down" ? "var(--data-down)" : "var(--fg-subtle)";
+  // Charts always render in the brand accent. Direction is communicated
+  // by <Delta> chips and explicit semantic indicators — never by chart tone.
+  const stroke = "var(--accent)";
 
   const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (data.length === 0) return;
